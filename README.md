@@ -22,7 +22,11 @@ TBD
 
 ## Installation
 
-TBD
+```bash
+mkdir -p ~/.config/rps
+make all
+cp ./dist/rps ./config.yaml ~/.config/rps/
+```
 
 ## Feature Roadmap
 

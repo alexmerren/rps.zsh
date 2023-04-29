@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"strings"
 
 	"github.com/alexmerren/rps/internal/config"
@@ -16,7 +17,9 @@ import (
 )
 
 const (
-	defaultProtocol = "ssh"
+	defaultProtocol     = "ssh"
+	configFileName      = "config.yaml"
+	configFileDirectory = ".config/rps/"
 )
 
 func NewCmdMenu() *cobra.Command {
@@ -24,7 +27,13 @@ func NewCmdMenu() *cobra.Command {
 		Use:   "menu",
 		Short: "Select repositories to manage",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			repositories, err := getRepositories()
+			ctx := context.Background()
+			configPath, err := generateConfigPath()
+			if err != nil {
+				return err
+			}
+
+			repositories, err := getRepositories(ctx, configPath)
 			if err != nil {
 				return err
 			}
@@ -40,7 +49,7 @@ func NewCmdMenu() *cobra.Command {
 			}
 
 			remoteUrl := repository.GenerateRepositoryRemoteUrl(repositories[selectedIndex], defaultProtocol)
-			if err = downloadRepository(remoteUrl); err != nil {
+			if err = downloadRepository(ctx, remoteUrl); err != nil {
 				return err
 			}
 			return nil
@@ -49,20 +58,21 @@ func NewCmdMenu() *cobra.Command {
 	return cmd
 }
 
-func downloadRepository(remoteUrl string) error {
-	out, err := exec.Command("git", "clone", remoteUrl).Output()
+func generateConfigPath() (string, error) {
+	currentUser, err := user.Current()
 	if err != nil {
-		return err
+		return "", err
 	}
-	fmt.Fprint(os.Stdout, string(out[:]))
-	return nil
+
+	homeDirectory := currentUser.HomeDir
+	configPath := fmt.Sprintf("%s%s%s", homeDirectory, configFileDirectory, configFileName)
+	return configPath, nil
 }
 
-func getRepositories() ([]*repository.Repository, error) {
-	githubConfig := config.NewGithubConfig("./_config.yaml")
+func getRepositories(ctx context.Context, configPath string) ([]*repository.Repository, error) {
+	githubConfig := config.NewGithubConfig(configPath)
 	token := githubConfig.GetToken()
 	username := githubConfig.GetUsername()
-	ctx := context.Background()
 	client := client.NewGithubClientWithAuthentication(token)
 	api := github.NewGithubUserApi(ctx, client)
 	starredRepositories, err := api.GetStarredRepositories(username)
@@ -104,4 +114,13 @@ func createPrompt(repositories []*repository.Repository) (promptui.Select, error
 		Searcher:  searchingFunction,
 	}
 	return prompt, nil
+}
+
+func downloadRepository(ctx context.Context, remoteUrl string) error {
+	out, err := exec.CommandContext(ctx, "git", "clone", remoteUrl).Output()
+	if err != nil {
+		return err
+	}
+	fmt.Fprint(os.Stdout, string(out[:]))
+	return nil
 }
