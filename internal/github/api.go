@@ -2,8 +2,9 @@ package github
 
 import (
 	"context"
-    "fmt"
-    "github.com/buger/jsonparser"
+	"strings"
+
+	"github.com/buger/jsonparser"
 )
 
 type GithubUserApi struct {
@@ -54,10 +55,10 @@ func getRepositoriesFromRaw(raw []byte) ([]*Repository, error) {
     repositories := make([]*Repository, 0)
     _, err := jsonparser.ArrayEach(raw,  func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
         name, _:= jsonparser.GetString(value, "name")
-        fmt.Println(name)
         owner, _:= jsonparser.GetString(value, "owner", "login")
-        hostname, _:= jsonparser.GetString(value, "html_url")
-        repositories= append(repositories, NewRepositoryWithHost(owner, name, hostname[8:18]))
+        rawHost, _:= jsonparser.GetString(value, "html_url")
+        host := strings.SplitN(rawHost[8:], "/", 2)[0]
+        repositories= append(repositories, NewRepositoryWithHost(owner, name, host))
     })
     if err != nil {
         return nil, err

@@ -11,24 +11,24 @@ const (
 )
 
 type Repository struct {
-    Owner string
-    Name string
-    Host string
+    owner string
+    name string
+    host string
 }
 
 func NewRepository(owner, name string) *Repository {
     return &Repository{
-        Owner: owner,
-        Name: name,
-        Host: githubHost,
+        owner: owner,
+        name: name,
+        host: githubHost,
     }
 }
 
-func NewRepositoryWithHost(owner, name, hostname string) *Repository {
+func NewRepositoryWithHost(owner, name, host string) *Repository {
     return &Repository{
-        Owner: owner,
-        Name: name,
-        Host: hostname,
+        owner: owner,
+        name: name,
+        host: host,
     }
 }
 
@@ -51,7 +51,19 @@ func GenerateRepositoryUrl(repository *Repository) (string, error) {
 
 func GenerateRepositoryRemoteUrl(repository *Repository, protocol string) (string, error) {
     if protocol == "ssh" {
-		return fmt.Sprintf("git@%s:%s/%s.git", repository.Host, repository.Owner, repository.Name), nil
+		return fmt.Sprintf("git@%s:%s/%s.git", repository.host, repository.owner, repository.name), nil
 	}
-    return fmt.Sprintf("https://%s/%s/%s", repository.Host, repository.Owner, repository.Name), nil
+    return fmt.Sprintf("https://%s/%s/%s", repository.host, repository.owner, repository.name), nil
+}
+
+func (r *Repository) GetOwner() string {
+    return r.owner
+}
+
+func (r *Repository) GetName() string {
+    return r.name
+}
+
+func (r *Repository) GetHost() string {
+    return r.host
 }
