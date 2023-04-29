@@ -9,14 +9,6 @@ type GithubConfigurator struct {
 	mock.Mock
 }
 
-type GithubConfigurator_Expecter struct {
-	mock *mock.Mock
-}
-
-func (_m *GithubConfigurator) EXPECT() *GithubConfigurator_Expecter {
-	return &GithubConfigurator_Expecter{mock: &_m.Mock}
-}
-
 // GetToken provides a mock function with given fields:
 func (_m *GithubConfigurator) GetToken() (string, error) {
 	ret := _m.Called()
@@ -41,33 +33,6 @@ func (_m *GithubConfigurator) GetToken() (string, error) {
 	return r0, r1
 }
 
-// GithubConfigurator_GetToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetToken'
-type GithubConfigurator_GetToken_Call struct {
-	*mock.Call
-}
-
-// GetToken is a helper method to define mock.On call
-func (_e *GithubConfigurator_Expecter) GetToken() *GithubConfigurator_GetToken_Call {
-	return &GithubConfigurator_GetToken_Call{Call: _e.mock.On("GetToken")}
-}
-
-func (_c *GithubConfigurator_GetToken_Call) Run(run func()) *GithubConfigurator_GetToken_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *GithubConfigurator_GetToken_Call) Return(_a0 string, _a1 error) *GithubConfigurator_GetToken_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubConfigurator_GetToken_Call) RunAndReturn(run func() (string, error)) *GithubConfigurator_GetToken_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetUsername provides a mock function with given fields:
 func (_m *GithubConfigurator) GetUsername() (string, error) {
 	ret := _m.Called()
@@ -90,33 +55,6 @@ func (_m *GithubConfigurator) GetUsername() (string, error) {
 	}
 
 	return r0, r1
-}
-
-// GithubConfigurator_GetUsername_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUsername'
-type GithubConfigurator_GetUsername_Call struct {
-	*mock.Call
-}
-
-// GetUsername is a helper method to define mock.On call
-func (_e *GithubConfigurator_Expecter) GetUsername() *GithubConfigurator_GetUsername_Call {
-	return &GithubConfigurator_GetUsername_Call{Call: _e.mock.On("GetUsername")}
-}
-
-func (_c *GithubConfigurator_GetUsername_Call) Run(run func()) *GithubConfigurator_GetUsername_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *GithubConfigurator_GetUsername_Call) Return(_a0 string, _a1 error) *GithubConfigurator_GetUsername_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubConfigurator_GetUsername_Call) RunAndReturn(run func() (string, error)) *GithubConfigurator_GetUsername_Call {
-	_c.Call.Return(run)
-	return _c
 }
 
 type mockConstructorTestingTNewGithubConfigurator interface {

@@ -35,7 +35,7 @@ vendor: ## Vendor dependencies.
 
 .PHONY: test
 test: ## Run unit tests.
-	$(GO) test -v ./...
+	$(GO) test ./...
 
 .PHONY: mocks
 mocks: ## Generate mocks for interfaces in internal.

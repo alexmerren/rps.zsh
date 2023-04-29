@@ -15,14 +15,6 @@ type GithubApi struct {
 	mock.Mock
 }
 
-type GithubApi_Expecter struct {
-	mock *mock.Mock
-}
-
-func (_m *GithubApi) EXPECT() *GithubApi_Expecter {
-	return &GithubApi_Expecter{mock: &_m.Mock}
-}
-
 // GetStarredRepositories provides a mock function with given fields: username
 func (_m *GithubApi) GetStarredRepositories(username string) ([]*repository.Repository, error) {
 	ret := _m.Called(username)
@@ -47,34 +39,6 @@ func (_m *GithubApi) GetStarredRepositories(username string) ([]*repository.Repo
 	}
 
 	return r0, r1
-}
-
-// GithubApi_GetStarredRepositories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetStarredRepositories'
-type GithubApi_GetStarredRepositories_Call struct {
-	*mock.Call
-}
-
-// GetStarredRepositories is a helper method to define mock.On call
-//   - username string
-func (_e *GithubApi_Expecter) GetStarredRepositories(username interface{}) *GithubApi_GetStarredRepositories_Call {
-	return &GithubApi_GetStarredRepositories_Call{Call: _e.mock.On("GetStarredRepositories", username)}
-}
-
-func (_c *GithubApi_GetStarredRepositories_Call) Run(run func(username string)) *GithubApi_GetStarredRepositories_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
-	})
-	return _c
-}
-
-func (_c *GithubApi_GetStarredRepositories_Call) Return(_a0 []*repository.Repository, _a1 error) *GithubApi_GetStarredRepositories_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubApi_GetStarredRepositories_Call) RunAndReturn(run func(string) ([]*repository.Repository, error)) *GithubApi_GetStarredRepositories_Call {
-	_c.Call.Return(run)
-	return _c
 }
 
 // GetStarredRepositoriesWithContext provides a mock function with given fields: ctx, username
@@ -103,35 +67,6 @@ func (_m *GithubApi) GetStarredRepositoriesWithContext(ctx context.Context, user
 	return r0, r1
 }
 
-// GithubApi_GetStarredRepositoriesWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetStarredRepositoriesWithContext'
-type GithubApi_GetStarredRepositoriesWithContext_Call struct {
-	*mock.Call
-}
-
-// GetStarredRepositoriesWithContext is a helper method to define mock.On call
-//   - ctx context.Context
-//   - username string
-func (_e *GithubApi_Expecter) GetStarredRepositoriesWithContext(ctx interface{}, username interface{}) *GithubApi_GetStarredRepositoriesWithContext_Call {
-	return &GithubApi_GetStarredRepositoriesWithContext_Call{Call: _e.mock.On("GetStarredRepositoriesWithContext", ctx, username)}
-}
-
-func (_c *GithubApi_GetStarredRepositoriesWithContext_Call) Run(run func(ctx context.Context, username string)) *GithubApi_GetStarredRepositoriesWithContext_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *GithubApi_GetStarredRepositoriesWithContext_Call) Return(_a0 []*repository.Repository, _a1 error) *GithubApi_GetStarredRepositoriesWithContext_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubApi_GetStarredRepositoriesWithContext_Call) RunAndReturn(run func(context.Context, string) ([]*repository.Repository, error)) *GithubApi_GetStarredRepositoriesWithContext_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetUserRepositories provides a mock function with given fields: username
 func (_m *GithubApi) GetUserRepositories(username string) ([]*repository.Repository, error) {
 	ret := _m.Called(username)
@@ -158,34 +93,6 @@ func (_m *GithubApi) GetUserRepositories(username string) ([]*repository.Reposit
 	return r0, r1
 }
 
-// GithubApi_GetUserRepositories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUserRepositories'
-type GithubApi_GetUserRepositories_Call struct {
-	*mock.Call
-}
-
-// GetUserRepositories is a helper method to define mock.On call
-//   - username string
-func (_e *GithubApi_Expecter) GetUserRepositories(username interface{}) *GithubApi_GetUserRepositories_Call {
-	return &GithubApi_GetUserRepositories_Call{Call: _e.mock.On("GetUserRepositories", username)}
-}
-
-func (_c *GithubApi_GetUserRepositories_Call) Run(run func(username string)) *GithubApi_GetUserRepositories_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
-	})
-	return _c
-}
-
-func (_c *GithubApi_GetUserRepositories_Call) Return(_a0 []*repository.Repository, _a1 error) *GithubApi_GetUserRepositories_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubApi_GetUserRepositories_Call) RunAndReturn(run func(string) ([]*repository.Repository, error)) *GithubApi_GetUserRepositories_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetUserRepositoriesWithContext provides a mock function with given fields: ctx, username
 func (_m *GithubApi) GetUserRepositoriesWithContext(ctx context.Context, username string) ([]*repository.Repository, error) {
 	ret := _m.Called(ctx, username)
@@ -210,35 +117,6 @@ func (_m *GithubApi) GetUserRepositoriesWithContext(ctx context.Context, usernam
 	}
 
 	return r0, r1
-}
-
-// GithubApi_GetUserRepositoriesWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUserRepositoriesWithContext'
-type GithubApi_GetUserRepositoriesWithContext_Call struct {
-	*mock.Call
-}
-
-// GetUserRepositoriesWithContext is a helper method to define mock.On call
-//   - ctx context.Context
-//   - username string
-func (_e *GithubApi_Expecter) GetUserRepositoriesWithContext(ctx interface{}, username interface{}) *GithubApi_GetUserRepositoriesWithContext_Call {
-	return &GithubApi_GetUserRepositoriesWithContext_Call{Call: _e.mock.On("GetUserRepositoriesWithContext", ctx, username)}
-}
-
-func (_c *GithubApi_GetUserRepositoriesWithContext_Call) Run(run func(ctx context.Context, username string)) *GithubApi_GetUserRepositoriesWithContext_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *GithubApi_GetUserRepositoriesWithContext_Call) Return(_a0 []*repository.Repository, _a1 error) *GithubApi_GetUserRepositoriesWithContext_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubApi_GetUserRepositoriesWithContext_Call) RunAndReturn(run func(context.Context, string) ([]*repository.Repository, error)) *GithubApi_GetUserRepositoriesWithContext_Call {
-	_c.Call.Return(run)
-	return _c
 }
 
 type mockConstructorTestingTNewGithubApi interface {

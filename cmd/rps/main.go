@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alexmerren/rps/internal/config"
-	"github.com/alexmerren/rps/internal/github"
-	"github.com/alexmerren/rps/internal/github/client"
+	"github.com/alexmerren/rps/internal/cmd"
 )
 
 type exitCode int
@@ -19,29 +17,19 @@ const (
 	exitAuth   exitCode = 4
 )
 
+const version = "0.1.0"
+
 func main() {
 	exitCode := mainRun()
 	os.Exit(int(exitCode))
 }
 
 func mainRun() exitCode {
-	githubConfig := config.NewGithubConfig("./_config.yaml")
-	token := githubConfig.GetToken()
-	username := githubConfig.GetUsername()
 	ctx := context.Background()
-	client := client.NewGithubClientWithAuthentication(token)
-	api := github.NewGithubUserApi(ctx, client)
-	starredRepositories, err := api.GetStarredRepositories(username)
-	if err != nil {
+	rootCmd := cmd.NewCmdRoot(version)
+	if _, err := rootCmd.ExecuteContextC(ctx); err != nil {
+		fmt.Fprint(os.Stderr, err.Error())
 		return exitError
-	}
-	userRepositories, err := api.GetUserRepositories(username)
-	if err != nil {
-		return exitError
-	}
-	allRepositories := append(userRepositories, starredRepositories...)
-	for _, repository := range allRepositories {
-		fmt.Println(repository)
 	}
 	return exitOK
 }

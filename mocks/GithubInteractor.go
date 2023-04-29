@@ -9,14 +9,6 @@ type GithubInteractor struct {
 	mock.Mock
 }
 
-type GithubInteractor_Expecter struct {
-	mock *mock.Mock
-}
-
-func (_m *GithubInteractor) EXPECT() *GithubInteractor_Expecter {
-	return &GithubInteractor_Expecter{mock: &_m.Mock}
-}
-
 // GetStarredRepositories provides a mock function with given fields: username
 func (_m *GithubInteractor) GetStarredRepositories(username string) ([]byte, error) {
 	ret := _m.Called(username)
@@ -43,34 +35,6 @@ func (_m *GithubInteractor) GetStarredRepositories(username string) ([]byte, err
 	return r0, r1
 }
 
-// GithubInteractor_GetStarredRepositories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetStarredRepositories'
-type GithubInteractor_GetStarredRepositories_Call struct {
-	*mock.Call
-}
-
-// GetStarredRepositories is a helper method to define mock.On call
-//   - username string
-func (_e *GithubInteractor_Expecter) GetStarredRepositories(username interface{}) *GithubInteractor_GetStarredRepositories_Call {
-	return &GithubInteractor_GetStarredRepositories_Call{Call: _e.mock.On("GetStarredRepositories", username)}
-}
-
-func (_c *GithubInteractor_GetStarredRepositories_Call) Run(run func(username string)) *GithubInteractor_GetStarredRepositories_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
-	})
-	return _c
-}
-
-func (_c *GithubInteractor_GetStarredRepositories_Call) Return(_a0 []byte, _a1 error) *GithubInteractor_GetStarredRepositories_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubInteractor_GetStarredRepositories_Call) RunAndReturn(run func(string) ([]byte, error)) *GithubInteractor_GetStarredRepositories_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetUserRepositories provides a mock function with given fields: username
 func (_m *GithubInteractor) GetUserRepositories(username string) ([]byte, error) {
 	ret := _m.Called(username)
@@ -95,34 +59,6 @@ func (_m *GithubInteractor) GetUserRepositories(username string) ([]byte, error)
 	}
 
 	return r0, r1
-}
-
-// GithubInteractor_GetUserRepositories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUserRepositories'
-type GithubInteractor_GetUserRepositories_Call struct {
-	*mock.Call
-}
-
-// GetUserRepositories is a helper method to define mock.On call
-//   - username string
-func (_e *GithubInteractor_Expecter) GetUserRepositories(username interface{}) *GithubInteractor_GetUserRepositories_Call {
-	return &GithubInteractor_GetUserRepositories_Call{Call: _e.mock.On("GetUserRepositories", username)}
-}
-
-func (_c *GithubInteractor_GetUserRepositories_Call) Run(run func(username string)) *GithubInteractor_GetUserRepositories_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
-	})
-	return _c
-}
-
-func (_c *GithubInteractor_GetUserRepositories_Call) Return(_a0 []byte, _a1 error) *GithubInteractor_GetUserRepositories_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *GithubInteractor_GetUserRepositories_Call) RunAndReturn(run func(string) ([]byte, error)) *GithubInteractor_GetUserRepositories_Call {
-	_c.Call.Return(run)
-	return _c
 }
 
 type mockConstructorTestingTNewGithubInteractor interface {

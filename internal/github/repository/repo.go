@@ -49,11 +49,11 @@ func GenerateRepositoryUrl(repository *Repository) (string, error) {
 	return "", nil
 }
 
-func GenerateRepositoryRemoteUrl(repository *Repository, protocol string) (string, error) {
+func GenerateRepositoryRemoteUrl(repository *Repository, protocol string) string {
 	if protocol == "ssh" {
-		return fmt.Sprintf("git@%s:%s/%s.git", repository.host, repository.owner, repository.name), nil
+		return fmt.Sprintf("git@%s:%s/%s.git", repository.host, repository.owner, repository.name)
 	}
-	return fmt.Sprintf("https://%s/%s/%s", repository.host, repository.owner, repository.name), nil
+	return fmt.Sprintf("https://%s/%s/%s", repository.host, repository.owner, repository.name)
 }
 
 func (r *Repository) GetOwner() string {

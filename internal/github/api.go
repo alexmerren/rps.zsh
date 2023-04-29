@@ -2,7 +2,7 @@ package github
 
 import (
 	"context"
-	"strings"
+	"net/url"
 
 	"github.com/alexmerren/rps/internal/github/client"
 	"github.com/alexmerren/rps/internal/github/repository"
@@ -30,7 +30,7 @@ func (g *GithubUserApi) GetUserRepositoriesWithContext(ctx context.Context, user
 	if err != nil {
 		return nil, err
 	}
-	userRepositories, err := getRepositoriesFromRaw(userRepositoriesRaw)
+	userRepositories, err := GetRepositoriesFromRaw(userRepositoriesRaw)
 	if err != nil {
 		return nil, err
 	}
@@ -46,21 +46,20 @@ func (g *GithubUserApi) GetStarredRepositoriesWithContext(ctx context.Context, u
 	if err != nil {
 		return nil, err
 	}
-	starredRepositories, err := getRepositoriesFromRaw(starredRepositoriesRaw)
+	starredRepositories, err := GetRepositoriesFromRaw(starredRepositoriesRaw)
 	if err != nil {
 		return nil, err
 	}
 	return starredRepositories, nil
 }
 
-func getRepositoriesFromRaw(raw []byte) ([]*repository.Repository, error) {
+func GetRepositoriesFromRaw(raw []byte) ([]*repository.Repository, error) {
 	repositories := make([]*repository.Repository, 0)
 	_, err := jsonparser.ArrayEach(raw, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
-		name, _ := jsonparser.GetString(value, "name")
-		owner, _ := jsonparser.GetString(value, "owner", "login")
-		rawHost, _ := jsonparser.GetString(value, "html_url")
-		host := strings.SplitN(rawHost[8:], "/", 2)[0]
-		repositories = append(repositories, repository.NewRepositoryWithHost(owner, name, host))
+		rawUrl, _ := jsonparser.GetString(value, "html_url")
+		parsedUrl, _ := url.Parse(rawUrl)
+		newRepository, _ := repository.NewRepositoryFromUrl(parsedUrl)
+		repositories = append(repositories, newRepository)
 	})
 	if err != nil {
 		return nil, err
