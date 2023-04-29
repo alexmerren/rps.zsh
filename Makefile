@@ -42,11 +42,11 @@ mocks: ## Generate mocks for interfaces in internal.
 	$(MOCKERY) --dir $(INTERNAL_DIR)
 
 .PHONY: fmt
-fmt:
+fmt: ## Format all the code in the project, must be done prior to building for maximum effectiveness.
 	$(GO) fmt ./...
 
-.PHONY: install
-install: vendor fmt build test 
+.PHONY: install 
+install: vendor fmt build test ## Install rps into $HOME/.config/rps.
 	mkdir -p $(HOME)/.config/rps
 	cp $(DIST_DIR)/rps $(CURDIR)/config.yaml $(HOME)/.config/rps
 	ln -s $(HOME)/.config/rps /usr/local/bin
