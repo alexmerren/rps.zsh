@@ -1,4 +1,4 @@
-package github
+package repository
 
 import (
     "net/url"

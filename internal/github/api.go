@@ -19,11 +19,11 @@ func NewGithubUserApi(ctx context.Context, client GithubClient) *GithubUserApi {
     }
 }
 
-func (g *GithubUserApi) GetUserRepositories(username string) ([]*Repository, error) {
+func (g *GithubUserApi) GetUserRepositories(username string) ([]*repository.Repository, error) {
     return g.GetUserRepositoriesWithContext(g.ctx, username)
 }
 
-func (g *GithubUserApi) GetUserRepositoriesWithContext(ctx context.Context, username string) ([]*Repository, error) {
+func (g *GithubUserApi) GetUserRepositoriesWithContext(ctx context.Context, username string) ([]*repository.Repository, error) {
     userRepositoriesRaw, err := g.client.GetUserRepositories(username)
     if err != nil {
         return nil, err
@@ -35,11 +35,11 @@ func (g *GithubUserApi) GetUserRepositoriesWithContext(ctx context.Context, user
     return userRepositories, nil
 }
 
-func (g *GithubUserApi) GetStarredRepositories(username string) ([]*Repository, error) {
+func (g *GithubUserApi) GetStarredRepositories(username string) ([]*repository.Repository, error) {
     return g.GetStarredRepositoriesWithContext(g.ctx, username)
 }
 
-func (g *GithubUserApi) GetStarredRepositoriesWithContext(ctx context.Context, username string) ([]*Repository, error) {
+func (g *GithubUserApi) GetStarredRepositoriesWithContext(ctx context.Context, username string) ([]*repository.Repository, error) {
     starredRepositoriesRaw, err := g.client.GetStarredRepositories(username)
     if err != nil {
         return nil, err

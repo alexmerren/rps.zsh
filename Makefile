@@ -19,8 +19,6 @@ help: ## Show this help message.
 
 .PHONY: all 
 all: build vendor test ## Download dependencies, run unit tests, and build the project.
-	@echo "Not implemented yet"
-
 
 .PHONY: build 
 build: ## Download dependencies and build the project. GOFLAGS can be specified for build flags.
