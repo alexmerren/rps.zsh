@@ -1,17 +1,14 @@
 package github
 
 import (
-    "context"
+	"context"
+
+	"github.com/alexmerren/rps/internal/github/repository"
 )
 
-type GithubApi interface { 
-    GetUserRepositories(username string) ([]*Repository, error)
-    GetUserRepositoriesWithContext(ctx context.Context, username string) ([]*Repository, error)
-    GetStarredRepositories(username string) ([]*Repository, error)
-    GetStarredRepositoriesWithContext(ctx context.Context, username string) ([]*Repository, error)
-}
-
-type GithubClient interface  {
-    GetUserRepositories(username string) ([]byte, error)
-    GetStarredRepositories(username string) ([]byte, error)
+type GithubApi interface {
+	GetUserRepositories(username string) ([]*repository.Repository, error)
+	GetUserRepositoriesWithContext(ctx context.Context, username string) ([]*repository.Repository, error)
+	GetStarredRepositories(username string) ([]*repository.Repository, error)
+	GetStarredRepositoriesWithContext(ctx context.Context, username string) ([]*repository.Repository, error)
 }

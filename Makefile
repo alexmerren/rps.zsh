@@ -1,4 +1,5 @@
 GO ?= go
+MOCKERY ?= mockery
 
 GOFLAGS :=
 # Set to 1 to use static linking for all builds (including tests).
@@ -10,6 +11,7 @@ endif
 
 CMD_DIR := $(CURDIR)/cmd
 DIST_DIR := $(CURDIR)/dist
+INTERNAL_DIR := $(CURDIR)/internal
 
 
 .PHONY: help 
@@ -19,8 +21,6 @@ help: ## Show this help message.
 
 .PHONY: all 
 all: build vendor test ## Download dependencies, run unit tests, and build the project.
-	@echo "Not implemented yet"
-
 
 .PHONY: build 
 build: ## Download dependencies and build the project. GOFLAGS can be specified for build flags.
@@ -35,4 +35,19 @@ vendor: ## Vendor dependencies.
 
 .PHONY: test
 test: ## Run unit tests.
-	@echo "Not implemented yet"
+	$(GO) test ./...
+
+.PHONY: mocks
+mocks: ## Generate mocks for interfaces in internal.
+	$(MOCKERY) --dir $(INTERNAL_DIR)
+
+.PHONY: fmt
+fmt: ## Format all the code in the project, must be done prior to building for maximum effectiveness.
+	$(GO) fmt ./...
+
+.PHONY: install 
+install: vendor fmt build test ## Install rps into $HOME/.config/rps.
+	mkdir -p $(HOME)/.config/rps
+	cp $(DIST_DIR)/rps $(CURDIR)/config.yaml $(HOME)/.config/rps
+	ln -s $(HOME)/.config/rps /usr/local/bin
+

@@ -1,6 +1,6 @@
 package config
 
 type GithubConfigurator interface {
-    GetUsername() (string, error)
-    GetToken() (string, error)
+	GetUsername() (string, error)
+	GetToken() (string, error)
 }

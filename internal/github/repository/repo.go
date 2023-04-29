@@ -1,35 +1,35 @@
-package github
+package repository
 
 import (
-    "net/url"
-    "fmt"
-    "strings"
+	"fmt"
+	"net/url"
+	"strings"
 )
 
 const (
-    githubHost = "github.com"
+	githubHost = "github.com"
 )
 
 type Repository struct {
-    owner string
-    name string
-    host string
+	owner string
+	name  string
+	host  string
 }
 
 func NewRepository(owner, name string) *Repository {
-    return &Repository{
-        owner: owner,
-        name: name,
-        host: githubHost,
-    }
+	return &Repository{
+		owner: owner,
+		name:  name,
+		host:  githubHost,
+	}
 }
 
 func NewRepositoryWithHost(owner, name, host string) *Repository {
-    return &Repository{
-        owner: owner,
-        name: name,
-        host: host,
-    }
+	return &Repository{
+		owner: owner,
+		name:  name,
+		host:  host,
+	}
 }
 
 func NewRepositoryFromUrl(url *url.URL) (*Repository, error) {
@@ -46,24 +46,24 @@ func NewRepositoryFromUrl(url *url.URL) (*Repository, error) {
 }
 
 func GenerateRepositoryUrl(repository *Repository) (string, error) {
-    return "", nil
+	return "", nil
 }
 
-func GenerateRepositoryRemoteUrl(repository *Repository, protocol string) (string, error) {
-    if protocol == "ssh" {
-		return fmt.Sprintf("git@%s:%s/%s.git", repository.host, repository.owner, repository.name), nil
+func GenerateRepositoryRemoteUrl(repository *Repository, protocol string) string {
+	if protocol == "ssh" {
+		return fmt.Sprintf("git@%s:%s/%s.git", repository.host, repository.owner, repository.name)
 	}
-    return fmt.Sprintf("https://%s/%s/%s", repository.host, repository.owner, repository.name), nil
+	return fmt.Sprintf("https://%s/%s/%s", repository.host, repository.owner, repository.name)
 }
 
 func (r *Repository) GetOwner() string {
-    return r.owner
+	return r.owner
 }
 
 func (r *Repository) GetName() string {
-    return r.name
+	return r.name
 }
 
 func (r *Repository) GetHost() string {
-    return r.host
+	return r.host
 }
