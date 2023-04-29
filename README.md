@@ -1,6 +1,6 @@
 # RPS
 
-`rps` (or **R**e**P**ository **S**elector) is a command-line tool that enables
+`rps` (or Repository Selector) is a command-line tool that enables
 quick installation of GitHub repositories that are owned or starred by a user.
 If you prefer your directories to be clean, like me, then this tool removes the
 irritation of re-downloading your projects!
