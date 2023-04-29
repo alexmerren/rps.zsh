@@ -17,8 +17,9 @@ irritation of re-downloading your projects!
 ## Usage
 
 It is a simple command-line tool that allows you to pick which repository you
-want to clone. You can either use Vim movement or arrow keys to move. `/` can
-be used to search through either the name or owner of the repository. Finally,
+want to clone. Start by typing `rps menu` to bring up the list of
+repositories.You can either use Vim movement or arrow keys to move. `/` can be
+used to search through either the name or owner of the repository. Finally,
 `Enter` selects and clones the repository in your current directory.
 
 ## Documentation
@@ -35,11 +36,12 @@ config placed in this directory and filled out properly.
 mkdir -p ~/.config/rps
 make all
 cp ./dist/rps ./config.yaml ~/.config/rps/
+sudo ln -s $HOME/.config/rps /usr/local/bin/
 ```
 
 ## Upcoming Features
 
-I will probbaly re-factor this in the near future so that it is somewhat
-maintainable. Documentation will be necessary to maintain this project
-longterm, and thorough testing still needs to be implemented. Don't sue me, I
-did this in one (1) day.
+I will probably re-factor this in the near future so that it is somewhat
+maintainable. Documentation will be necessary for this project longterm, and
+thorough testing still needs to be implemented. Don't sue me, I did this in one
+(1) day.

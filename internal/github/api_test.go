@@ -68,12 +68,12 @@ func TestGetUserRepositories_Errors(t *testing.T) {
 	// arrange
 	ctx := context.Background()
 	mockClient := &mocks.GithubInteractor{}
-    githubUserApi := github.NewGithubUserApi(ctx, mockClient)
+	githubUserApi := github.NewGithubUserApi(ctx, mockClient)
 
 	var testCases = []struct {
-		name        string
-		clientErr   bool
-		err         error
+		name      string
+		clientErr bool
+		err       error
 	}{
 		{
 			name:      "Client Error",
@@ -81,8 +81,8 @@ func TestGetUserRepositories_Errors(t *testing.T) {
 			err:       errors.New("test-error"),
 		},
 		{
-			name:       "Reponse Error",
-			err:        errors.New("Unknown value type"),
+			name: "Reponse Error",
+			err:  errors.New("Unknown value type"),
 		},
 	}
 
@@ -124,12 +124,12 @@ func TestGetStarredRepositories_Errors(t *testing.T) {
 	// arrange
 	ctx := context.Background()
 	mockClient := &mocks.GithubInteractor{}
-    githubUserApi := github.NewGithubUserApi(ctx, mockClient)
+	githubUserApi := github.NewGithubUserApi(ctx, mockClient)
 
 	var testCases = []struct {
-		name        string
-		clientErr   bool
-		err         error
+		name      string
+		clientErr bool
+		err       error
 	}{
 		{
 			name:      "Client Error",
@@ -137,8 +137,8 @@ func TestGetStarredRepositories_Errors(t *testing.T) {
 			err:       errors.New("test-error"),
 		},
 		{
-			name:       "Reponse Error",
-			err:        errors.New("Unknown value type"),
+			name: "Reponse Error",
+			err:  errors.New("Unknown value type"),
 		},
 	}
 

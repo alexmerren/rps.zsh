@@ -44,3 +44,10 @@ mocks: ## Generate mocks for interfaces in internal.
 .PHONY: fmt
 fmt:
 	$(GO) fmt ./...
+
+.PHONY: install
+install: vendor fmt build test 
+	mkdir -p $(HOME)/.config/rps
+	cp ./dist/rps ./config.yaml ~/.config/rps
+	ln -s $(HOME)/.config/rps /usr/local/bin
+
