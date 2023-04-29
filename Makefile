@@ -48,6 +48,6 @@ fmt:
 .PHONY: install
 install: vendor fmt build test 
 	mkdir -p $(HOME)/.config/rps
-	cp ./dist/rps ./config.yaml ~/.config/rps
+	cp $(DIST_DIR)/rps $(CURDIR)/config.yaml $(HOME)/.config/rps
 	ln -s $(HOME)/.config/rps /usr/local/bin
 

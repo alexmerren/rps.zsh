@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -31,6 +32,10 @@ func NewCmdMenu() *cobra.Command {
 			configPath, err := generateConfigPath()
 			if err != nil {
 				return err
+			}
+
+			if _, err = os.Stat(configPath); err != nil {
+				return errors.New("could not find config.yaml. Is it located in $HOME/.config/rps?")
 			}
 
 			repositories, err := getRepositories(ctx, configPath)
@@ -71,6 +76,9 @@ func generateConfigPath() (string, error) {
 
 func getRepositories(ctx context.Context, configPath string) ([]*repository.Repository, error) {
 	githubConfig := config.NewGithubConfig(configPath)
+	if githubConfig == nil {
+		return nil, errors.New("the config could not be read. Is it properly formatted?")
+	}
 	token := githubConfig.GetToken()
 	username := githubConfig.GetUsername()
 	client := client.NewGithubClientWithAuthentication(token)
