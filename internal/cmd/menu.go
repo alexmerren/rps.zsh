@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -48,10 +50,11 @@ func NewCmdMenu() *cobra.Command {
 }
 
 func downloadRepository(remoteUrl string) error {
-	_, err := exec.Command("git", "clone", remoteUrl).Output()
+	out, err := exec.Command("git", "clone", remoteUrl).Output()
 	if err != nil {
 		return err
 	}
+	fmt.Fprint(os.Stdout, string(out[:]))
 	return nil
 }
 
