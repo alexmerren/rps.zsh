@@ -1,4 +1,4 @@
-module github.com/alexmerren/repo-selector
+module github.com/alexmerren/rps
 
 go 1.20
 

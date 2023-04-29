@@ -5,8 +5,8 @@ import (
 	"os"
     "fmt"
 
-	"github.com/alexmerren/repo-selector/internal/config"
-	"github.com/alexmerren/repo-selector/internal/github"
+	"github.com/alexmerren/rps/internal/config"
+	"github.com/alexmerren/rps/internal/github"
 )
 
 type exitCode int
