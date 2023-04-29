@@ -1,4 +1,5 @@
 GO ?= go
+MOCKERY ?= mockery
 
 GOFLAGS :=
 # Set to 1 to use static linking for all builds (including tests).
@@ -10,6 +11,7 @@ endif
 
 CMD_DIR := $(CURDIR)/cmd
 DIST_DIR := $(CURDIR)/dist
+INTERNAL_DIR := $(CURDIR)/internal
 
 
 .PHONY: help 
@@ -33,4 +35,12 @@ vendor: ## Vendor dependencies.
 
 .PHONY: test
 test: ## Run unit tests.
-	@echo "Not implemented yet"
+	$(GO) test -v ./...
+
+.PHONY: mocks
+mocks: ## Generate mocks for interfaces in internal.
+	$(MOCKERY) --dir $(INTERNAL_DIR)
+
+.PHONY: fmt
+fmt:
+	$(GO) fmt ./...
