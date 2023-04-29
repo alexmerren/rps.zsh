@@ -19,7 +19,7 @@ import (
 const (
 	defaultProtocol     = "ssh"
 	configFileName      = "config.yaml"
-	configFileDirectory = ".config/rps/"
+	configFileDirectory = "/.config/rps/"
 )
 
 func NewCmdMenu() *cobra.Command {
