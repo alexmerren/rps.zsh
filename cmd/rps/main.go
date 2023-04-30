@@ -26,8 +26,8 @@ func main() {
 
 func mainRun() exitCode {
 	ctx := context.Background()
-	rootCmd := cmd.NewCmdRoot(version)
-	if _, err := rootCmd.ExecuteContextC(ctx); err != nil {
+	menuCmd := cmd.NewCmdMenu()
+	if _, err := menuCmd.ExecuteContextC(ctx); err != nil {
 		fmt.Fprint(os.Stderr, err.Error())
 		return exitError
 	}
