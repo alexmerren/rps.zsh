@@ -2,7 +2,6 @@ package github
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"os"
 	"os/exec"
@@ -71,10 +70,11 @@ func GetRepositoriesFromRaw(raw []byte) ([]*repository.Repository, error) {
 }
 
 func CallOsGitClone(ctx context.Context, remoteUrl string) error {
-	out, err := exec.CommandContext(ctx, "git", "clone", remoteUrl).Output()
-	if err != nil {
+	cmd := exec.CommandContext(ctx, "git", "clone", remoteUrl)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
 		return err
 	}
-	fmt.Fprint(os.Stdout, string(out[:]))
 	return nil
 }

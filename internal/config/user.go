@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	defaultConfigName      = "config.yaml"
 	defaultConfigDirectory = "/.config/rps/"
+	defaultConfigName      = "config.yaml"
 )
 
 func generateUserHomeConfigPath() (string, error) {
@@ -17,9 +17,7 @@ func generateUserHomeConfigPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	homeDirectory := currentUser.HomeDir
-	configPath := fmt.Sprintf("%s%s%s", homeDirectory, defaultConfigDirectory, defaultConfigName)
-	return configPath, nil
+	return fmt.Sprintf("%s%s%s", currentUser.HomeDir, defaultConfigDirectory, defaultConfigName), nil
 }
 
 func CreateUserConfig() (*GithubConfig, error) {
@@ -31,9 +29,11 @@ func CreateUserConfig() (*GithubConfig, error) {
 	if _, err = os.Stat(configFilepath); err != nil {
 		return nil, errors.New("could not find config.yaml. Is it located in $HOME/.config/rps?")
 	}
+
 	githubConfig := NewGithubConfig(configFilepath)
 	if githubConfig == nil {
 		return nil, errors.New("the config could not be read. Is it properly formatted?")
 	}
+
 	return githubConfig, nil
 }
