@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 
 	"github.com/alexmerren/rps/internal/config"
 	"github.com/alexmerren/rps/internal/github"
@@ -49,6 +50,9 @@ func NewCmdMenu() *cobra.Command {
 func getRepositoriesWithConfig(ctx context.Context, config *config.GithubConfig) ([]*repository.Repository, error) {
 	token := config.GetToken()
 	username := config.GetUsername()
+	if token == "" || username == "" {
+		return nil, errors.New("could not find token or username")
+	}
 	client := client.NewGithubClientWithAuthentication(token)
 	api := github.NewGithubUserApi(ctx, client)
 	starredRepositories, err := api.GetStarredRepositories(username)

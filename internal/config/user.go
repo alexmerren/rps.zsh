@@ -4,20 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"os/user"
 )
 
 const (
-	defaultConfigDirectory = "/.config/rps/"
+	defaultConfigDirectory = "/usr/local/share/rps/"
 	defaultConfigName      = "config.yaml"
 )
 
+var defaultConfigFilepath = fmt.Sprintf("%s%s", defaultConfigDirectory, defaultConfigName)
+
 func generateUserHomeConfigPath() (string, error) {
-	currentUser, err := user.Current()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%s%s%s", currentUser.HomeDir, defaultConfigDirectory, defaultConfigName), nil
+	return fmt.Sprintf("%s%s", defaultConfigDirectory, defaultConfigName), nil
 }
 
 func CreateUserConfig() (*GithubConfig, error) {
@@ -27,7 +24,7 @@ func CreateUserConfig() (*GithubConfig, error) {
 	}
 
 	if _, err = os.Stat(configFilepath); err != nil {
-		return nil, errors.New("could not find config.yaml. Is it located in $HOME/.config/rps?")
+		return nil, fmt.Errorf("could not find config.yaml. Is it located in %s?", defaultConfigFilepath)
 	}
 
 	githubConfig := NewGithubConfig(configFilepath)

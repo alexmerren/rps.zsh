@@ -13,6 +13,7 @@ CMD_DIR := $(CURDIR)/cmd
 DIST_DIR := $(CURDIR)/dist
 INTERNAL_DIR := $(CURDIR)/internal
 
+BIN_NAME := rps
 
 .PHONY: help 
 help: ## Show this help message.	
@@ -45,9 +46,19 @@ mocks: ## Generate mocks for interfaces in internal.
 fmt: ## Format all the code in the project, must be done prior to building for maximum effectiveness.
 	$(GO) fmt ./...
 
-.PHONY: install 
-install: vendor fmt build test ## Install rps into $HOME/.config/rps.
-	mkdir -p $(HOME)/.config/rps
-	cp $(DIST_DIR)/rps $(CURDIR)/config.yaml $(HOME)/.config/rps
-	ln -s $(HOME)/.config/rps /usr/local/bin
+DEST_DIR :=
+PREFIX := /usr/local
+BIN_DIR := ${PREFIX}/bin
+DATA_DIR := ${PREFIX}/share
 
+.PHONY: install 
+install: vendor fmt build test ## Install rps to /usr/local/bin
+	install -d ${DEST_DIR}${BIN_DIR}
+	install -m755 $(DIST_DIR)/$(BIN_NAME) ${DEST_DIR}${BIN_DIR}/
+	install -d ${DEST_DIR}${DATA_DIR}/$(BIN_NAME)
+	install -m644 ./config.yaml ${DEST_DIR}${DATA_DIR}/$(BIN_NAME)/
+
+.PHONY: uninstall
+uninstall: ## Uninstall rps and config files
+	rm -f ${DEST_DIR}${BIN_DIR}/$(BIN_NAME)
+	rm -f ${DEST_DIR}${DATA_DIR}/$(BIN_NAME)/config.yaml

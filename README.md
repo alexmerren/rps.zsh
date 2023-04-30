@@ -32,6 +32,14 @@ The installation steps assume that you have filled out the config.yaml with
 your specific information. Please note that `rps` will **NOT** work without the
 config placed in this directory and filled out properly.
 
+To install you can either install `make install`, or the following commands.
+They are identical in function. 
+
+
+NOTE: These functions will create a new directory in your `$HOME/config` and a
+symlink to your `usr/local/bin`.
+
+
 ```bash
 mkdir -p ~/.config/rps
 make all
