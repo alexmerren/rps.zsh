@@ -1,8 +1,8 @@
 # RPS
 
-`rps` (or Repository Selector) is a command-line tool that enables
-quick installation of GitHub repositories that are owned or starred by a user.
-If you prefer your directories to be clean, like me, then this tool removes the
+`rps` (or Repository Selector) is a command-line tool that enables quick
+installation of GitHub repositories that are owned or starred by a user. If you
+prefer your directories to be clean, like me, then this tool removes the
 irritation of re-downloading your projects!
 
 ![](./docs/splash.png)
@@ -24,32 +24,15 @@ used to search through either the name or owner of the repository. Finally,
 
 ## Documentation
 
-TBD
+Coming soon... 
 
 ## Installation
 
-The installation steps assume that you have filled out the config.yaml with
-your specific information. Please note that `rps` will **NOT** work without the
-config placed in this directory and filled out properly.
-
-To install you can either install `make install`, or the following commands.
-They are identical in function. 
-
-
-NOTE: These functions will create a new directory in your `$HOME/config` and a
-symlink to your `usr/local/bin`.
-
-
-```bash
-mkdir -p ~/.config/rps
-make all
-cp ./dist/rps ./config.yaml ~/.config/rps/
-sudo ln -s $HOME/.config/rps /usr/local/bin/
-```
+Prior to installing `rps`, fill out the config `config.yaml` with your GitHub
+personal access token. You can then run `make install` to download all
+dependencies, build, test, and install the binary into `/usr/local/bin`.
 
 ## Upcoming Features
 
-I will probably re-factor this in the near future so that it is somewhat
-maintainable. Documentation will be necessary for this project longterm, and
-thorough testing still needs to be implemented. Don't sue me, I did this in one
-(1) day.
+Documentation will be necessary for this project longterm, and thorough testing
+still needs to be implemented. Don't sue me, I did this in one (1) day.
