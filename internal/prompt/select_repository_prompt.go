@@ -15,13 +15,14 @@ func NewGithubRepositoryPrompt() *GithubRepositoryPrompt {
 	return &GithubRepositoryPrompt{}
 }
 
-func (g *GithubRepositoryPrompt) SelectRepositoryPrompt(repositories []*repository.Repository) (int, error) {
+func (g *GithubRepositoryPrompt) SelectRepositoryPrompt(repositories []*repository.Repository, isVimMode bool) (int, error) {
 	prompt := promptui.Select{
 		Label:     "repository",
 		Items:     repositories,
 		Templates: generateRepositoryTemplates(),
 		Size:      numResultsInPrompt,
 		Searcher:  createSearchingFunction(repositories),
+		IsVimMode: isVimMode,
 	}
 	index, _, err := prompt.Run()
 	if err != nil {
