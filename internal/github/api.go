@@ -3,6 +3,8 @@ package github
 import (
 	"context"
 	"net/url"
+	"os"
+	"os/exec"
 
 	"github.com/alexmerren/rps/internal/github/client"
 	"github.com/alexmerren/rps/internal/github/repository"
@@ -65,4 +67,14 @@ func GetRepositoriesFromRaw(raw []byte) ([]*repository.Repository, error) {
 		return nil, err
 	}
 	return repositories, nil
+}
+
+func CallOsGitClone(ctx context.Context, remoteUrl string) error {
+	cmd := exec.CommandContext(ctx, "git", "clone", remoteUrl)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+	return nil
 }
