@@ -14,6 +14,11 @@ import (
 
 const (
 	defaultProtocol = "ssh"
+
+	defaultIsVimMode     = false
+	vimModeFlagNameLong  = "vimmode"
+	vimModeFlagNameShort = "v"
+	vimModeFlagUsage     = ""
 )
 
 func NewCmdMenu() *cobra.Command {
@@ -31,8 +36,13 @@ func NewCmdMenu() *cobra.Command {
 				return err
 			}
 
+			isVimMode, err := cmd.Flags().GetBool(vimModeFlagNameLong)
+			if err != nil {
+				return err
+			}
+
 			prompter := prompt.NewGithubRepositoryPrompt()
-			selectedIndex, err := prompter.SelectRepositoryPrompt(repositories)
+			selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode)
 			if err != nil {
 				return err
 			}
@@ -44,6 +54,7 @@ func NewCmdMenu() *cobra.Command {
 			return nil
 		},
 	}
+	cmd.PersistentFlags().BoolP(vimModeFlagNameLong, vimModeFlagNameShort, defaultIsVimMode, vimModeFlagUsage)
 	return cmd
 }
 
