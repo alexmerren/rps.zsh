@@ -9,17 +9,11 @@ import (
 )
 
 const (
-	apiUrl                     = "https://api.github.com"
-	authListRepositoryEndpoint = "/user/repos"
-	listRepositoryEndpoint     = "/users/%s/repos"
-	authListStarredEndpoint    = "/user/starred"
-	listStarredEndpoint        = "/users/%s/starred"
-
-	defaultApiVersion = "2022-11-28"
-
-	versionHeaderName = "X-GitHub-Api-Version"
-	authHeaderName    = "Authorization"
-	authHeaderPrefix  = "Bearer %s"
+	apiUrl                 = "https://api.github.com"
+	listRepositoryEndpoint = "/users/%s/repos"
+	listStarredEndpoint    = "/users/%s/starred"
+	defaultApiVersion      = "2022-11-28"
+	versionHeaderName      = "X-GitHub-Api-Version"
 )
 
 type GithubClient struct {
@@ -72,6 +66,10 @@ func doRequestAndReturnBody(request *http.Request, client *http.Client) ([]byte,
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to do request: %s", err.Error())
+	}
+	if response.StatusCode != http.StatusOK {
+		fmt.Println(response.StatusCode)
+		return nil, fmt.Errorf("response code was %d", response.StatusCode)
 	}
 	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {

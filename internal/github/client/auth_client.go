@@ -7,6 +7,13 @@ import (
 	"net/url"
 )
 
+const (
+	authListRepositoryEndpoint = "/user/repos"
+	authListStarredEndpoint    = "/user/starred"
+	authHeaderName             = "Authorization"
+	authHeaderPrefix           = "Bearer %s"
+)
+
 type GithubClientWithAuthentication struct {
 	token   string
 	version string
