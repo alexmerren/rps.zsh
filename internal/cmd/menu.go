@@ -18,10 +18,15 @@ const (
 	defaultIsVimMode     = false
 	vimModeFlagNameLong  = "vimmode"
 	vimModeFlagNameShort = "v"
-	vimModeFlagUsage     = ""
+	vimModeFlagUsage     = "use vim-like controls on the selection prompt"
+
+	defaultNumLines       = 10
+	numLinesFlagNameLong  = "lines"
+	numLinesFlagNameShort = "l"
+	numLinesFlagUsage     = "number of lines to display on the selection prompt"
 )
 
-func NewCmdMenu() *cobra.Command {
+func NewCmdRoot() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rps",
 		Short: "Select repositories to download",
@@ -41,7 +46,16 @@ func NewCmdMenu() *cobra.Command {
 				return err
 			}
 
-			prompter := prompt.NewGithubRepositoryPrompt()
+			numberOfLines, err := cmd.Flags().GetInt(numLinesFlagNameLong)
+			if err != nil {
+				return err
+			}
+
+			prompter := prompt.NewGithubRepositoryPrompt(numberOfLines)
+			if prompter == nil {
+				return errors.New("could not create github repository prompter")
+			}
+
 			selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode)
 			if err != nil {
 				return err
@@ -54,7 +68,11 @@ func NewCmdMenu() *cobra.Command {
 			return nil
 		},
 	}
+	cmd.SilenceErrors = true // This removes the command output from terminal
+	cmd.SilenceUsage = true  // this removes the usage output when cancelling
 	cmd.PersistentFlags().BoolP(vimModeFlagNameLong, vimModeFlagNameShort, defaultIsVimMode, vimModeFlagUsage)
+	cmd.PersistentFlags().IntP(numLinesFlagNameLong, numLinesFlagNameShort, defaultNumLines, numLinesFlagUsage)
+
 	return cmd
 }
 

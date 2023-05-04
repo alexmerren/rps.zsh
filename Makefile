@@ -21,7 +21,7 @@ help: ## Show this help message.
 
 
 .PHONY: all 
-all: build vendor test ## Download dependencies, run unit tests, and build the project.
+all: vendor fmt test build ## Download dependencies, run unit tests, and build the project.
 
 .PHONY: build 
 build: ## Download dependencies and build the project. GOFLAGS can be specified for build flags.
@@ -52,11 +52,16 @@ BIN_DIR := ${PREFIX}/bin
 DATA_DIR := ${PREFIX}/share
 
 .PHONY: install 
-install: vendor fmt build test ## Install rps to /usr/local/bin
+install: vendor fmt build test ## Install rps to /usr/local/bin and config to /usr/local/share/rps
 	install -d ${DEST_DIR}${BIN_DIR}
 	install -m755 $(DIST_DIR)/$(BIN_NAME) ${DEST_DIR}${BIN_DIR}/
 	install -d ${DEST_DIR}${DATA_DIR}/$(BIN_NAME)
 	install -m644 ./config.yaml ${DEST_DIR}${DATA_DIR}/$(BIN_NAME)/
+
+.PHONY: install_no_config 
+install_no_config: vendor fmt build test ## Install rps to /usr/local/bin
+	install -d ${DEST_DIR}${BIN_DIR}
+	install -m755 $(DIST_DIR)/$(BIN_NAME) ${DEST_DIR}${BIN_DIR}/
 
 .PHONY: uninstall
 uninstall: ## Uninstall rps and config files

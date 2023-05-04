@@ -7,12 +7,18 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-const numResultsInPrompt = 25
+type GithubRepositoryPrompt struct {
+	numLinesInPrompt int
+}
 
-type GithubRepositoryPrompt struct{}
+func NewGithubRepositoryPrompt(numLines int) *GithubRepositoryPrompt {
+	if numLines == 0 {
+		return nil
+	}
 
-func NewGithubRepositoryPrompt() *GithubRepositoryPrompt {
-	return &GithubRepositoryPrompt{}
+	return &GithubRepositoryPrompt{
+		numLinesInPrompt: numLines,
+	}
 }
 
 func (g *GithubRepositoryPrompt) SelectRepositoryPrompt(repositories []*repository.Repository, isVimMode bool) (int, error) {
@@ -20,7 +26,7 @@ func (g *GithubRepositoryPrompt) SelectRepositoryPrompt(repositories []*reposito
 		Label:     "repository",
 		Items:     repositories,
 		Templates: generateRepositoryTemplates(),
-		Size:      numResultsInPrompt,
+		Size:      g.numLinesInPrompt,
 		Searcher:  createSearchingFunction(repositories),
 		IsVimMode: isVimMode,
 	}
