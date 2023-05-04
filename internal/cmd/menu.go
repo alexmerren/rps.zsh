@@ -31,16 +31,6 @@ func NewCmdRoot() *cobra.Command {
 		Use:   "rps",
 		Short: "Select repositories to download",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			config, err := config.CreateUserConfig()
-			if err != nil {
-				return err
-			}
-
-			repositories, err := getRepositoriesWithConfig(cmd.Context(), config)
-			if err != nil {
-				return err
-			}
-
 			isVimMode, err := cmd.Flags().GetBool(vimModeFlagNameLong)
 			if err != nil {
 				return err
@@ -51,21 +41,7 @@ func NewCmdRoot() *cobra.Command {
 				return err
 			}
 
-			prompter := prompt.NewGithubRepositoryPrompt(numberOfLines)
-			if prompter == nil {
-				return errors.New("could not create github repository prompter")
-			}
-
-			selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode)
-			if err != nil {
-				return err
-			}
-
-			remoteUrl := repository.GenerateRepositoryRemoteUrl(repositories[selectedIndex], defaultProtocol)
-			if err = github.CallOsGitClone(cmd.Context(), remoteUrl); err != nil {
-				return err
-			}
-			return nil
+			return rootRun(cmd.Context(), isVimMode, numberOfLines, defaultProtocol)
 		},
 	}
 	cmd.SilenceErrors = true // This removes the command output from terminal
@@ -74,6 +50,31 @@ func NewCmdRoot() *cobra.Command {
 	cmd.PersistentFlags().IntP(numLinesFlagNameLong, numLinesFlagNameShort, defaultNumLines, numLinesFlagUsage)
 
 	return cmd
+}
+
+func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remoteProtocol string) error {
+	config, err := config.CreateUserConfig()
+	if err != nil {
+		return err
+	}
+
+	repositories, err := getRepositoriesWithConfig(ctx, config)
+	if err != nil {
+		return err
+	}
+
+	prompter := prompt.NewGithubRepositoryPrompt()
+	bellSkipperStdout := prompt.NewBellSkipperStdout()
+	selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode, numLinesInPrompt, bellSkipperStdout)
+	if err != nil {
+		return err
+	}
+
+	remoteUrl := repository.GenerateRepositoryRemoteUrl(repositories[selectedIndex], remoteProtocol)
+	if err = github.CallOsGitClone(ctx, remoteUrl); err != nil {
+		return err
+	}
+	return nil
 }
 
 func getRepositoriesWithConfig(ctx context.Context, config *config.GithubConfig) ([]*repository.Repository, error) {
