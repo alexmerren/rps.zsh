@@ -1,34 +1,28 @@
 package prompt
 
 import (
+	"io"
 	"strings"
 
 	"github.com/alexmerren/rps/internal/github/repository"
 	"github.com/manifoldco/promptui"
 )
 
-type GithubRepositoryPrompt struct {
-	numLinesInPrompt int
+type GithubRepositoryPrompt struct{}
+
+func NewGithubRepositoryPrompt() *GithubRepositoryPrompt {
+	return &GithubRepositoryPrompt{}
 }
 
-func NewGithubRepositoryPrompt(numLines int) *GithubRepositoryPrompt {
-	if numLines == 0 {
-		return nil
-	}
-
-	return &GithubRepositoryPrompt{
-		numLinesInPrompt: numLines,
-	}
-}
-
-func (g *GithubRepositoryPrompt) SelectRepositoryPrompt(repositories []*repository.Repository, isVimMode bool) (int, error) {
+func (g *GithubRepositoryPrompt) SelectRepositoryPrompt(repositories []*repository.Repository, isVimMode bool, numLinesInPrompt int, stdout io.WriteCloser) (int, error) {
 	prompt := promptui.Select{
 		Label:     "repository",
 		Items:     repositories,
-		Templates: generateRepositoryTemplates(),
-		Size:      g.numLinesInPrompt,
-		Searcher:  createSearchingFunction(repositories),
+		Stdout:    stdout,
 		IsVimMode: isVimMode,
+		Size:      numLinesInPrompt,
+		Templates: generateRepositoryTemplates(),
+		Searcher:  createSearchingFunction(repositories),
 	}
 	index, _, err := prompt.Run()
 	if err != nil {
