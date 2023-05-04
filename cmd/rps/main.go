@@ -17,8 +17,6 @@ const (
 	exitAuth   exitCode = 4
 )
 
-const version = "0.1.0"
-
 func main() {
 	exitCode := mainRun()
 	os.Exit(int(exitCode))
@@ -26,8 +24,8 @@ func main() {
 
 func mainRun() exitCode {
 	ctx := context.Background()
-	menuCmd := cmd.NewCmdMenu()
-	if _, err := menuCmd.ExecuteContextC(ctx); err != nil {
+	rootCmd := cmd.NewCmdRoot()
+	if _, err := rootCmd.ExecuteContextC(ctx); err != nil {
 		fmt.Fprint(os.Stderr, err.Error())
 		return exitError
 	}
