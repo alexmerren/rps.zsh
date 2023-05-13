@@ -22,7 +22,7 @@ help: ## Show this help message.
 
 
 .PHONY: all 
-all: vendor fmt test build ## Download dependencies, run unit tests, and build the project.
+all: vendor fmt lint test build ## Download dependencies, run unit tests, and build the project.
 
 .PHONY: build 
 build: ## Download dependencies and build the project. GOFLAGS can be specified for build flags.

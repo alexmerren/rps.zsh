@@ -72,13 +72,14 @@ func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remotePr
 
 	selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode, numLinesInPrompt, bellSkipperStdout)
 	if err != nil {
-		return fmt.Errorf(": %w", err)
+		return fmt.Errorf("error in prompt: %w", err)
 	}
 
 	remoteURL := repository.GenerateRepositoryRemoteURL(repositories[selectedIndex], remoteProtocol)
 	err = github.CallOsGitClone(ctx, remoteURL)
 
-	return fmt.Errorf("could not call Git Clone: %w", err)
+	//nolint:wrapcheck // This does not need to be wrapped.
+	return err
 }
 
 func getRepositoriesWithConfig(config *config.GithubConfig) ([]*repository.Repository, error) {

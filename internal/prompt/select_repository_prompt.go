@@ -1,6 +1,7 @@
 package prompt
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -10,6 +11,8 @@ import (
 )
 
 const defaultHideHelp = true
+
+var ErrPromptInterrupted = errors.New("RPS Cancelled")
 
 type GithubRepositoryPrompt struct{}
 
@@ -33,9 +36,17 @@ func (g *GithubRepositoryPrompt) SelectRepositoryPrompt(
 		Templates: generateRepositoryTemplates(),
 		Searcher:  createSearchingFunction(repositories),
 	}
-	index, _, err := prompt.Run()
 
-	return index, fmt.Errorf("error in select prompt: %w", err)
+	index, _, err := prompt.Run()
+	if err != nil && errors.Is(err, promptui.ErrInterrupt) {
+		return 0, ErrPromptInterrupted
+	}
+
+	if err != nil {
+		return 0, fmt.Errorf("error in select prompt: %w", err)
+	}
+
+	return index, nil
 }
 
 func createSearchingFunction(repositories []*repository.Repository) func(string, int) bool {
