@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/alexmerren/rps/internal/cmd"
@@ -25,9 +24,10 @@ func main() {
 func mainRun() exitCode {
 	ctx := context.Background()
 	rootCmd := cmd.NewCmdRoot()
+
 	if _, err := rootCmd.ExecuteContextC(ctx); err != nil {
-		fmt.Fprint(os.Stderr, err.Error())
 		return exitError
 	}
+
 	return exitOK
 }

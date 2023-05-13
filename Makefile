@@ -1,5 +1,6 @@
 GO ?= go
 MOCKERY ?= mockery
+LINTER := golangci-lint
 
 GOFLAGS :=
 # Set to 1 to use static linking for all builds (including tests).
@@ -37,6 +38,10 @@ vendor: ## Vendor dependencies.
 .PHONY: test
 test: ## Run unit tests.
 	$(GO) test ./...
+
+.PHONY: lint
+lint: ## Lint the project
+	@$(LINTER) run ./...
 
 .PHONY: mocks
 mocks: ## Generate mocks for interfaces in internal.

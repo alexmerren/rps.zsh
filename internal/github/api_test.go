@@ -1,7 +1,6 @@
 package github_test
 
 import (
-	"context"
 	"errors"
 	"testing"
 
@@ -40,7 +39,10 @@ const (
 	testRepo3 = "test-repository-3"
 )
 
+//nolint:gochecknoglobals // What the hell do you want me to do? Not have globals for testing?
 var (
+	errTest                     = errors.New("test error")
+	errParsingJSON              = errors.New("could not format repositories: error in parsing JSON: Unknown value type")
 	testProcessedRepositoryData = []*repository.Repository{
 		repository.NewRepositoryWithHost(testUser1, testRepo1, testHost),
 		repository.NewRepositoryWithHost(testUser1, testRepo2, testHost),
@@ -50,13 +52,13 @@ var (
 
 func TestGetUserRepositories_HappyPath(t *testing.T) {
 	// arrange
-	ctx := context.Background()
-	mockClient := &mocks.GithubInteractor{}
+	t.Parallel()
+	mockClient := mocks.NewGithubInteractor(t)
 	mockClient.On("GetUserRepositories", testUser1).Return([]byte(testValidRawRepositoryData), nil).Once()
-	githubUserApi := github.NewGithubUserApi(ctx, mockClient)
+	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserApi.GetUserRepositories(testUser1)
+	repositories, err := githubUserAPI.GetUserRepositories(testUser1)
 
 	// assert
 	assert.NoError(t, err)
@@ -64,98 +66,82 @@ func TestGetUserRepositories_HappyPath(t *testing.T) {
 	mockClient.AssertExpectations(t)
 }
 
-func TestGetUserRepositories_Errors(t *testing.T) {
+func TestGetUserRepositories_ClientErrors(t *testing.T) {
 	// arrange
-	ctx := context.Background()
-	mockClient := &mocks.GithubInteractor{}
-	githubUserApi := github.NewGithubUserApi(ctx, mockClient)
+	t.Parallel()
+	mockClient := mocks.NewGithubInteractor(t)
+	mockClient.On("GetUserRepositories", testUser1).Return(nil, errTest).Once()
+	githubUserAPI := github.NewUserAPI(mockClient)
 
-	var testCases = []struct {
-		name      string
-		clientErr bool
-		err       error
-	}{
-		{
-			name:      "Client Error",
-			clientErr: true,
-			err:       errors.New("test-error"),
-		},
-		{
-			name: "Reponse Error",
-			err:  errors.New("Unknown value type"),
-		},
-	}
+	// act
+	repositories, err := githubUserAPI.GetUserRepositories(testUser1)
 
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			if testCase.clientErr {
-				mockClient.On("GetUserRepositories", testUser1).Return(nil, testCase.err).Once()
-			} else {
-				mockClient.On("GetUserRepositories", testUser1).Return([]byte(testInvalidRawRepositoryData), nil).Once()
-			}
-			// act
-			repositories, err := githubUserApi.GetUserRepositories(testUser1)
+	// assert
+	assert.ErrorIs(t, err, errTest)
+	assert.Nil(t, repositories)
+	mockClient.AssertExpectations(t)
+}
 
-			// assert
-			assert.ErrorContains(t, err, testCase.err.Error())
-			assert.Nil(t, repositories)
-			mockClient.AssertExpectations(t)
-		})
-	}
+func TestGetUserRepositories_ParsingError(t *testing.T) {
+	// arrange
+	t.Parallel()
+	mockClient := mocks.NewGithubInteractor(t)
+	mockClient.On("GetUserRepositories", testUser1).Return([]byte(testInvalidRawRepositoryData), nil).Once()
+	githubUserAPI := github.NewUserAPI(mockClient)
+
+	// act
+	repositories, err := githubUserAPI.GetUserRepositories(testUser1)
+
+	// assert
+	assert.ErrorContains(t, err, errParsingJSON.Error())
+	assert.Nil(t, repositories)
+	mockClient.AssertExpectations(t)
+}
+
+func TestGetStarredRepositories_ClientError(t *testing.T) {
+	// arrange
+	t.Parallel()
+	mockClient := mocks.NewGithubInteractor(t)
+	mockClient.On("GetStarredRepositories", testUser1).Return(nil, errTest).Once()
+	githubUserAPI := github.NewUserAPI(mockClient)
+
+	// act
+	repositories, err := githubUserAPI.GetStarredRepositories(testUser1)
+
+	// assert
+	assert.ErrorIs(t, err, errTest)
+	assert.Nil(t, repositories)
+	mockClient.AssertExpectations(t)
+}
+
+func TestGetStarredRepositories_ParsingError(t *testing.T) {
+	// arrange
+	t.Parallel()
+	mockClient := mocks.NewGithubInteractor(t)
+	mockClient.On("GetStarredRepositories", testUser1).Return([]byte(testInvalidRawRepositoryData), nil).Once()
+	githubUserAPI := github.NewUserAPI(mockClient)
+
+	// act
+	repositories, err := githubUserAPI.GetStarredRepositories(testUser1)
+
+	// assert
+	assert.ErrorContains(t, err, errParsingJSON.Error())
+	assert.Nil(t, repositories)
+	mockClient.AssertExpectations(t)
 }
 
 func TestGetStarredRepositories_HappyPath(t *testing.T) {
 	// arrange
-	ctx := context.Background()
-	mockClient := &mocks.GithubInteractor{}
+	t.Parallel()
+	mockClient := mocks.NewGithubInteractor(t)
 	mockClient.On("GetStarredRepositories", testUser1).Return([]byte(testValidRawRepositoryData), nil).Once()
-	githubUserApi := github.NewGithubUserApi(ctx, mockClient)
+	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserApi.GetStarredRepositories(testUser1)
+	repositories, err := githubUserAPI.GetStarredRepositories(testUser1)
 
 	// assert
 	assert.NoError(t, err)
 	assert.Equal(t, testProcessedRepositoryData, repositories)
 	mockClient.AssertExpectations(t)
-}
-
-func TestGetStarredRepositories_Errors(t *testing.T) {
-	// arrange
-	ctx := context.Background()
-	mockClient := &mocks.GithubInteractor{}
-	githubUserApi := github.NewGithubUserApi(ctx, mockClient)
-
-	var testCases = []struct {
-		name      string
-		clientErr bool
-		err       error
-	}{
-		{
-			name:      "Client Error",
-			clientErr: true,
-			err:       errors.New("test-error"),
-		},
-		{
-			name: "Reponse Error",
-			err:  errors.New("Unknown value type"),
-		},
-	}
-
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			if testCase.clientErr {
-				mockClient.On("GetStarredRepositories", testUser1).Return(nil, testCase.err).Once()
-			} else {
-				mockClient.On("GetStarredRepositories", testUser1).Return([]byte(testInvalidRawRepositoryData), nil).Once()
-			}
-			// act
-			repositories, err := githubUserApi.GetStarredRepositories(testUser1)
-
-			// assert
-			assert.ErrorContains(t, err, testCase.err.Error())
-			assert.Nil(t, repositories)
-			mockClient.AssertExpectations(t)
-		})
-	}
 }

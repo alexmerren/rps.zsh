@@ -8,7 +8,8 @@ import (
 
 const (
 	githubUsernameKey = "GITHUB_USERNAME"
-	githubTokenKey    = "GITHUB_TOKEN"
+	//nolint:gosec //These are not credentials.
+	githubTokenKey = "GITHUB_TOKEN"
 )
 
 type GithubConfig struct {
