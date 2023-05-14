@@ -7,5 +7,10 @@ import (
 )
 
 type RepositoryPrompter interface {
-	SelectRepositoryPrompt(repositories []*repository.Repository, isVimMode bool, numLinesInPrompt int, stdout io.WriteCloser) (int, error)
+	SelectRepositoryPrompt(
+		repositories []*repository.Repository,
+		isVimMode bool,
+		numLinesInPrompt int,
+		stdout io.WriteCloser,
+	) (int, error)
 }

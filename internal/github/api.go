@@ -2,6 +2,7 @@ package github
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"os"
 	"os/exec"
@@ -11,70 +12,65 @@ import (
 	"github.com/buger/jsonparser"
 )
 
-type GithubUserApi struct {
-	ctx    context.Context
+type UserAPI struct {
 	client client.GithubInteractor
 }
 
-func NewGithubUserApi(ctx context.Context, client client.GithubInteractor) *GithubUserApi {
-	return &GithubUserApi{
-		ctx:    ctx,
+func NewUserAPI(client client.GithubInteractor) *UserAPI {
+	return &UserAPI{
 		client: client,
 	}
 }
 
-func (g *GithubUserApi) GetUserRepositories(username string) ([]*repository.Repository, error) {
-	return g.GetUserRepositoriesWithContext(g.ctx, username)
-}
-
-func (g *GithubUserApi) GetUserRepositoriesWithContext(ctx context.Context, username string) ([]*repository.Repository, error) {
+func (g *UserAPI) GetUserRepositories(username string) ([]*repository.Repository, error) {
 	userRepositoriesRaw, err := g.client.GetUserRepositories(username)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not get user repositories: %w", err)
 	}
+
 	userRepositories, err := GetRepositoriesFromRaw(userRepositoriesRaw)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not format repositories: %w", err)
 	}
+
 	return userRepositories, nil
 }
 
-func (g *GithubUserApi) GetStarredRepositories(username string) ([]*repository.Repository, error) {
-	return g.GetStarredRepositoriesWithContext(g.ctx, username)
-}
-
-func (g *GithubUserApi) GetStarredRepositoriesWithContext(ctx context.Context, username string) ([]*repository.Repository, error) {
+func (g *UserAPI) GetStarredRepositories(username string) ([]*repository.Repository, error) {
 	starredRepositoriesRaw, err := g.client.GetStarredRepositories(username)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not get starred repositories: %w", err)
 	}
+
 	starredRepositories, err := GetRepositoriesFromRaw(starredRepositoriesRaw)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not format repositories: %w", err)
 	}
+
 	return starredRepositories, nil
 }
 
 func GetRepositoriesFromRaw(raw []byte) ([]*repository.Repository, error) {
 	repositories := make([]*repository.Repository, 0)
+
 	_, err := jsonparser.ArrayEach(raw, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
-		rawUrl, _ := jsonparser.GetString(value, "html_url")
-		parsedUrl, _ := url.Parse(rawUrl)
-		newRepository, _ := repository.NewRepositoryFromUrl(parsedUrl)
+		rawURL, _ := jsonparser.GetString(value, "html_url")
+		parsedURL, _ := url.Parse(rawURL)
+		newRepository, _ := repository.NewRepositoryFromURL(parsedURL)
 		repositories = append(repositories, newRepository)
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error in parsing JSON: %w", err)
 	}
+
 	return repositories, nil
 }
 
-func CallOsGitClone(ctx context.Context, remoteUrl string) error {
-	cmd := exec.CommandContext(ctx, "git", "clone", remoteUrl)
+func CallOsGitClone(ctx context.Context, remoteURL string) error {
+	cmd := exec.CommandContext(ctx, "git", "clone", remoteURL)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
+	err := cmd.Run()
+
+	return fmt.Errorf("error calling git clone: %w", err)
 }

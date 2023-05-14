@@ -14,6 +14,11 @@ const (
 	authHeaderPrefix           = "Bearer %s"
 )
 
+var (
+	errCreateAuthListRequest    = errors.New("could not create authenticated list repository request")
+	errCreateAuthStarredRequest = errors.New("could not create authenticated starred repository request")
+)
+
 type GithubClientWithAuthentication struct {
 	token   string
 	version string
@@ -27,29 +32,31 @@ func NewGithubClientWithAuthentication(token string) *GithubClientWithAuthentica
 
 	return &GithubClientWithAuthentication{
 		token:   token,
-		version: defaultApiVersion,
+		version: defaultAPIVersion,
 		client:  http.DefaultClient,
 	}
 }
 
-func (g *GithubClientWithAuthentication) GetUserRepositories(username string) ([]byte, error) {
-	request := createRequestWithAuthentication(apiUrl, authListRepositoryEndpoint, g.token, g.version)
+func (g *GithubClientWithAuthentication) GetUserRepositories(_ string) ([]byte, error) {
+	request := createRequestWithAuthentication(apiURL, authListRepositoryEndpoint, g.token, g.version)
 	if request == nil {
-		return nil, errors.New("could not create authenticated list repository request")
+		return nil, errCreateAuthListRequest
 	}
+
 	return doRequestAndReturnBody(request, g.client)
 }
 
-func (g *GithubClientWithAuthentication) GetStarredRepositories(username string) ([]byte, error) {
-	request := createRequestWithAuthentication(apiUrl, authListStarredEndpoint, g.token, g.version)
+func (g *GithubClientWithAuthentication) GetStarredRepositories(_ string) ([]byte, error) {
+	request := createRequestWithAuthentication(apiURL, authListStarredEndpoint, g.token, g.version)
 	if request == nil {
-		return nil, errors.New("could not create authenticated list starred request")
+		return nil, errCreateAuthStarredRequest
 	}
+
 	return doRequestAndReturnBody(request, g.client)
 }
 
-func createRequestWithAuthentication(apiUrl, endpoint, token, version string) *http.Request {
-	url, err := url.Parse(fmt.Sprintf("%s%s", apiUrl, endpoint))
+func createRequestWithAuthentication(apiURL, endpoint, token, version string) *http.Request {
+	url, err := url.Parse(fmt.Sprintf("%s%s", apiURL, endpoint))
 	if err != nil {
 		return nil
 	}
@@ -59,6 +66,7 @@ func createRequestWithAuthentication(apiUrl, endpoint, token, version string) *h
 		authHeaderName:    {fmt.Sprintf(authHeaderPrefix, token)},
 	}
 
+	//nolint:exhaustruct // All the properties do not need to be defined.
 	return &http.Request{
 		Method: http.MethodGet,
 		URL:    url,

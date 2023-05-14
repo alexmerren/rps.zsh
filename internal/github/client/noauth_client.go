@@ -9,11 +9,17 @@ import (
 )
 
 const (
-	apiUrl                 = "https://api.github.com"
+	apiURL                 = "https://api.github.com"
 	listRepositoryEndpoint = "/users/%s/repos"
 	listStarredEndpoint    = "/users/%s/starred"
-	defaultApiVersion      = "2022-11-28"
+	defaultAPIVersion      = "2022-11-28"
 	versionHeaderName      = "X-GitHub-Api-Version"
+)
+
+var (
+	errCreateListRequest     = errors.New("could not create list repository request")
+	errCreateStarredRequest  = errors.New("could not create starred repository request")
+	errIncorrectResponseCode = errors.New("incorrect response code")
 )
 
 type GithubClient struct {
@@ -23,30 +29,33 @@ type GithubClient struct {
 
 func NewGithubClient() *GithubClient {
 	return &GithubClient{
-		version: defaultApiVersion,
+		version: defaultAPIVersion,
 		client:  http.DefaultClient,
 	}
 }
 
 func (g *GithubClient) GetUserRepositories(username string) ([]byte, error) {
-	request := createRequest(apiUrl, listRepositoryEndpoint, username, g.version)
+	request := createRequest(apiURL, listRepositoryEndpoint, username, g.version)
 	if request == nil {
-		return nil, errors.New("could not create authenticated list repository request")
+		return nil, errCreateListRequest
 	}
+
 	return doRequestAndReturnBody(request, g.client)
 }
 
 func (g *GithubClient) GetStarredRepositories(username string) ([]byte, error) {
-	request := createRequest(apiUrl, listStarredEndpoint, username, g.version)
+	request := createRequest(apiURL, listStarredEndpoint, username, g.version)
 	if request == nil {
-		return nil, errors.New("could not create authenticated list starred request")
+		return nil, errCreateStarredRequest
 	}
+
 	return doRequestAndReturnBody(request, g.client)
 }
 
-func createRequest(apiUrl, endpoint, username, version string) *http.Request {
+func createRequest(apiURL, endpoint, username, version string) *http.Request {
 	formattedEndpoint := fmt.Sprintf(endpoint, username)
-	url, err := url.Parse(fmt.Sprintf("%s%s", apiUrl, formattedEndpoint))
+
+	url, err := url.Parse(fmt.Sprintf("%s%s", apiURL, formattedEndpoint))
 	if err != nil {
 		return nil
 	}
@@ -55,6 +64,7 @@ func createRequest(apiUrl, endpoint, username, version string) *http.Request {
 		versionHeaderName: {version},
 	}
 
+	//nolint:exhaustruct // All the properties do not need to be defined.
 	return &http.Request{
 		Method: http.MethodGet,
 		URL:    url,
@@ -65,19 +75,22 @@ func createRequest(apiUrl, endpoint, username, version string) *http.Request {
 func doRequestAndReturnBody(request *http.Request, client *http.Client) ([]byte, error) {
 	response, err := client.Do(request)
 	if err != nil {
-		return nil, fmt.Errorf("failed to do request: %s", err.Error())
+		return nil, fmt.Errorf("failed to do request: %w", err)
 	}
+
 	if response.StatusCode != http.StatusOK {
-		fmt.Println(response.StatusCode)
-		return nil, fmt.Errorf("response code was %d", response.StatusCode)
+		return nil, fmt.Errorf("%w: %d", errIncorrectResponseCode, response.StatusCode)
 	}
+
 	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %s", err.Error())
+		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
+
 	err = response.Body.Close()
 	if err != nil {
-		return nil, fmt.Errorf("failed to close response body: %s", err.Error())
+		return nil, fmt.Errorf("failed to close response body: %w", err)
 	}
+
 	return responseBody, nil
 }

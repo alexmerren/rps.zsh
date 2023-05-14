@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
 	"github.com/alexmerren/rps/internal/cmd"
+	"github.com/alexmerren/rps/internal/prompt"
 )
 
 type exitCode int
@@ -25,9 +27,12 @@ func main() {
 func mainRun() exitCode {
 	ctx := context.Background()
 	rootCmd := cmd.NewCmdRoot()
-	if _, err := rootCmd.ExecuteContextC(ctx); err != nil {
-		fmt.Fprint(os.Stderr, err.Error())
+
+	if _, err := rootCmd.ExecuteContextC(ctx); err != nil && !errors.Is(err, prompt.ErrPromptInterrupted) {
+		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
+
 		return exitError
 	}
+
 	return exitOK
 }

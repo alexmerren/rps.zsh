@@ -3,6 +3,8 @@
 package mocks
 
 import (
+	io "io"
+
 	mock "github.com/stretchr/testify/mock"
 
 	repository "github.com/alexmerren/rps/internal/github/repository"
@@ -13,23 +15,23 @@ type RepositoryPrompter struct {
 	mock.Mock
 }
 
-// SelectRepositoryPrompt provides a mock function with given fields: repositories
-func (_m *RepositoryPrompter) SelectRepositoryPrompt(repositories []*repository.Repository) (int, error) {
-	ret := _m.Called(repositories)
+// SelectRepositoryPrompt provides a mock function with given fields: repositories, isVimMode, numLinesInPrompt, stdout
+func (_m *RepositoryPrompter) SelectRepositoryPrompt(repositories []*repository.Repository, isVimMode bool, numLinesInPrompt int, stdout io.WriteCloser) (int, error) {
+	ret := _m.Called(repositories, isVimMode, numLinesInPrompt, stdout)
 
 	var r0 int
 	var r1 error
-	if rf, ok := ret.Get(0).(func([]*repository.Repository) (int, error)); ok {
-		return rf(repositories)
+	if rf, ok := ret.Get(0).(func([]*repository.Repository, bool, int, io.WriteCloser) (int, error)); ok {
+		return rf(repositories, isVimMode, numLinesInPrompt, stdout)
 	}
-	if rf, ok := ret.Get(0).(func([]*repository.Repository) int); ok {
-		r0 = rf(repositories)
+	if rf, ok := ret.Get(0).(func([]*repository.Repository, bool, int, io.WriteCloser) int); ok {
+		r0 = rf(repositories, isVimMode, numLinesInPrompt, stdout)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
-	if rf, ok := ret.Get(1).(func([]*repository.Repository) error); ok {
-		r1 = rf(repositories)
+	if rf, ok := ret.Get(1).(func([]*repository.Repository, bool, int, io.WriteCloser) error); ok {
+		r1 = rf(repositories, isVimMode, numLinesInPrompt, stdout)
 	} else {
 		r1 = ret.Error(1)
 	}
