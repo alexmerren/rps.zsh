@@ -70,7 +70,11 @@ func CallOsGitClone(ctx context.Context, remoteURL string) error {
 	cmd := exec.CommandContext(ctx, "git", "clone", remoteURL)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err := cmd.Run()
 
-	return fmt.Errorf("error calling git clone: %w", err)
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("error calling git clone: %w", err)
+	}
+
+	return nil
 }
