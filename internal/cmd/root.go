@@ -67,10 +67,16 @@ func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remotePr
 		return err
 	}
 
-	prompter := prompt.NewGithubRepositoryPrompt()
-	bellSkipperStdout := prompt.NewBellSkipperStdout()
+	// If you'd rather *not* use fzf, then uncomment!
+	// prompter := prompt.NewGithubRepositoryPrompt()
+	// bellSkipperStdout := prompt.NewBellSkipperStdout()
 
-	selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode, numLinesInPrompt, bellSkipperStdout)
+	// selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode, numLinesInPrompt, bellSkipperStdout)
+	// if err != nil {
+	// 	return fmt.Errorf("error in prompt: %w", err)
+	// }
+
+	selectedIndex, err := prompt.NewFzfPrompt(ctx, repositories)
 	if err != nil {
 		return fmt.Errorf("error in prompt: %w", err)
 	}

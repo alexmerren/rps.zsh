@@ -57,7 +57,7 @@ BIN_DIR := ${PREFIX}/bin
 DATA_DIR := ${PREFIX}/share
 
 .PHONY: install 
-install: all ## Install rps to /usr/local/bin and config to /usr/local/share/rps
+install: ## Install rps to /usr/local/bin and config to /usr/local/share/rps
 	install -d ${DEST_DIR}${BIN_DIR}
 	install -m755 $(DIST_DIR)/$(BIN_NAME) ${DEST_DIR}${BIN_DIR}/
 	install -d ${DEST_DIR}${DATA_DIR}/$(BIN_NAME)
