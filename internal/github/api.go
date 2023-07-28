@@ -22,8 +22,8 @@ func NewUserAPI(client client.GithubInteractor) *UserAPI {
 	}
 }
 
-func (g *UserAPI) GetUserRepositories(username string) ([]*repository.Repository, error) {
-	userRepositoriesRaw, err := g.client.GetUserRepositories(username)
+func (g *UserAPI) GetUserRepositories() ([]*repository.Repository, error) {
+	userRepositoriesRaw, err := g.client.GetUserRepositories()
 	if err != nil {
 		return nil, fmt.Errorf("could not get user repositories: %w", err)
 	}
@@ -36,8 +36,8 @@ func (g *UserAPI) GetUserRepositories(username string) ([]*repository.Repository
 	return userRepositories, nil
 }
 
-func (g *UserAPI) GetStarredRepositories(username string) ([]*repository.Repository, error) {
-	starredRepositoriesRaw, err := g.client.GetStarredRepositories(username)
+func (g *UserAPI) GetStarredRepositories() ([]*repository.Repository, error) {
+	starredRepositoriesRaw, err := g.client.GetStarredRepositories()
 	if err != nil {
 		return nil, fmt.Errorf("could not get starred repositories: %w", err)
 	}

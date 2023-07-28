@@ -42,7 +42,7 @@ func NewGithubClientWithAuthentication(token string) *GithubClientWithAuthentica
 	}
 }
 
-func (g *GithubClientWithAuthentication) GetUserRepositories(_ string) ([]byte, error) {
+func (g *GithubClientWithAuthentication) GetUserRepositories() ([]byte, error) {
 	request := createRequestWithAuthentication(apiURL, authListRepositoryEndpoint, g.token, g.version)
 	if request == nil {
 		return nil, errCreateAuthListRequest
@@ -51,7 +51,7 @@ func (g *GithubClientWithAuthentication) GetUserRepositories(_ string) ([]byte, 
 	return doRequestAndReturnBody(request, g.client)
 }
 
-func (g *GithubClientWithAuthentication) GetStarredRepositories(_ string) ([]byte, error) {
+func (g *GithubClientWithAuthentication) GetStarredRepositories() ([]byte, error) {
 	request := createRequestWithAuthentication(apiURL, authListStarredEndpoint, g.token, g.version)
 	if request == nil {
 		return nil, errCreateAuthStarredRequest

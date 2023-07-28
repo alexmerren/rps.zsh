@@ -54,11 +54,11 @@ func TestGetUserRepositories_HappyPath(t *testing.T) {
 	// arrange
 	t.Parallel()
 	mockClient := mocks.NewGithubInteractor(t)
-	mockClient.On("GetUserRepositories", testUser1).Return([]byte(testValidRawRepositoryData), nil).Once()
+	mockClient.On("GetUserRepositories").Return([]byte(testValidRawRepositoryData), nil).Once()
 	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserAPI.GetUserRepositories(testUser1)
+	repositories, err := githubUserAPI.GetUserRepositories()
 
 	// assert
 	assert.NoError(t, err)
@@ -70,11 +70,11 @@ func TestGetUserRepositories_ClientErrors(t *testing.T) {
 	// arrange
 	t.Parallel()
 	mockClient := mocks.NewGithubInteractor(t)
-	mockClient.On("GetUserRepositories", testUser1).Return(nil, errTest).Once()
+	mockClient.On("GetUserRepositories").Return(nil, errTest).Once()
 	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserAPI.GetUserRepositories(testUser1)
+	repositories, err := githubUserAPI.GetUserRepositories()
 
 	// assert
 	assert.ErrorIs(t, err, errTest)
@@ -86,11 +86,11 @@ func TestGetUserRepositories_ParsingError(t *testing.T) {
 	// arrange
 	t.Parallel()
 	mockClient := mocks.NewGithubInteractor(t)
-	mockClient.On("GetUserRepositories", testUser1).Return([]byte(testInvalidRawRepositoryData), nil).Once()
+	mockClient.On("GetUserRepositories").Return([]byte(testInvalidRawRepositoryData), nil).Once()
 	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserAPI.GetUserRepositories(testUser1)
+	repositories, err := githubUserAPI.GetUserRepositories()
 
 	// assert
 	assert.ErrorContains(t, err, errParsingJSON.Error())
@@ -102,11 +102,11 @@ func TestGetStarredRepositories_ClientError(t *testing.T) {
 	// arrange
 	t.Parallel()
 	mockClient := mocks.NewGithubInteractor(t)
-	mockClient.On("GetStarredRepositories", testUser1).Return(nil, errTest).Once()
+	mockClient.On("GetStarredRepositories").Return(nil, errTest).Once()
 	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserAPI.GetStarredRepositories(testUser1)
+	repositories, err := githubUserAPI.GetStarredRepositories()
 
 	// assert
 	assert.ErrorIs(t, err, errTest)
@@ -118,11 +118,11 @@ func TestGetStarredRepositories_ParsingError(t *testing.T) {
 	// arrange
 	t.Parallel()
 	mockClient := mocks.NewGithubInteractor(t)
-	mockClient.On("GetStarredRepositories", testUser1).Return([]byte(testInvalidRawRepositoryData), nil).Once()
+	mockClient.On("GetStarredRepositories").Return([]byte(testInvalidRawRepositoryData), nil).Once()
 	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserAPI.GetStarredRepositories(testUser1)
+	repositories, err := githubUserAPI.GetStarredRepositories()
 
 	// assert
 	assert.ErrorContains(t, err, errParsingJSON.Error())
@@ -134,11 +134,11 @@ func TestGetStarredRepositories_HappyPath(t *testing.T) {
 	// arrange
 	t.Parallel()
 	mockClient := mocks.NewGithubInteractor(t)
-	mockClient.On("GetStarredRepositories", testUser1).Return([]byte(testValidRawRepositoryData), nil).Once()
+	mockClient.On("GetStarredRepositories").Return([]byte(testValidRawRepositoryData), nil).Once()
 	githubUserAPI := github.NewUserAPI(mockClient)
 
 	// act
-	repositories, err := githubUserAPI.GetStarredRepositories(testUser1)
+	repositories, err := githubUserAPI.GetStarredRepositories()
 
 	// assert
 	assert.NoError(t, err)
