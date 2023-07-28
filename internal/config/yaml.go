@@ -7,14 +7,12 @@ import (
 )
 
 const (
-	githubUsernameKey = "GITHUB_USERNAME"
 	//nolint:gosec //These are not credentials.
 	githubTokenKey = "GITHUB_TOKEN"
 )
 
 type GithubConfig struct {
-	token    string
-	username string
+	token string
 }
 
 func NewGithubConfig(filename string) *GithubConfig {
@@ -29,15 +27,10 @@ func NewGithubConfig(filename string) *GithubConfig {
 	}
 
 	return &GithubConfig{
-		token:    configMap[githubTokenKey],
-		username: configMap[githubUsernameKey],
+		token: configMap[githubTokenKey],
 	}
 }
 
 func (g *GithubConfig) GetToken() string {
 	return g.token
-}
-
-func (g *GithubConfig) GetUsername() string {
-	return g.username
 }

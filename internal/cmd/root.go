@@ -67,10 +67,16 @@ func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remotePr
 		return err
 	}
 
-	prompter := prompt.NewGithubRepositoryPrompt()
-	bellSkipperStdout := prompt.NewBellSkipperStdout()
+	// If you'd rather *not* use fzf, then uncomment!
+	// prompter := prompt.NewGithubRepositoryPrompt()
+	// bellSkipperStdout := prompt.NewBellSkipperStdout()
 
-	selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode, numLinesInPrompt, bellSkipperStdout)
+	// selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode, numLinesInPrompt, bellSkipperStdout)
+	// if err != nil {
+	// 	return fmt.Errorf("error in prompt: %w", err)
+	// }
+
+	selectedIndex, err := prompt.NewFzfPrompt(repositories)
 	if err != nil {
 		return fmt.Errorf("error in prompt: %w", err)
 	}
@@ -84,21 +90,20 @@ func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remotePr
 
 func getRepositoriesWithConfig(config *config.GithubConfig) ([]*repository.Repository, error) {
 	token := config.GetToken()
-	username := config.GetUsername()
 
-	if token == "" || username == "" {
+	if token == "" {
 		return nil, errConfigNotValid
 	}
 
 	client := client.NewGithubClientWithAuthentication(token)
 	api := github.NewUserAPI(client)
 
-	starredRepositories, err := api.GetStarredRepositories(username)
+	starredRepositories, err := api.GetStarredRepositories()
 	if err != nil {
 		return nil, fmt.Errorf("could not get starred repositories: %w", err)
 	}
 
-	userRepositories, err := api.GetUserRepositories(username)
+	userRepositories, err := api.GetUserRepositories()
 	if err != nil {
 		return nil, fmt.Errorf("could not get user repositories: %w", err)
 	}
