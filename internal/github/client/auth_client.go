@@ -3,20 +3,25 @@ package client
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 )
 
 const (
+	apiURL                     = "https://api.github.com"
 	authListRepositoryEndpoint = "/user/repos"
 	authListStarredEndpoint    = "/user/starred"
 	authHeaderName             = "Authorization"
 	authHeaderPrefix           = "Bearer %s"
+	defaultAPIVersion          = "2022-11-28"
+	versionHeaderName          = "X-GitHub-Api-Version"
 )
 
 var (
 	errCreateAuthListRequest    = errors.New("could not create authenticated list repository request")
 	errCreateAuthStarredRequest = errors.New("could not create authenticated starred repository request")
+	errIncorrectResponseCode    = errors.New("incorrect response code")
 )
 
 type GithubClientWithAuthentication struct {
@@ -72,4 +77,27 @@ func createRequestWithAuthentication(apiURL, endpoint, token, version string) *h
 		URL:    url,
 		Header: headers,
 	}
+}
+
+func doRequestAndReturnBody(request *http.Request, client *http.Client) ([]byte, error) {
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, fmt.Errorf("failed to do request: %w", err)
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%w: %d", errIncorrectResponseCode, response.StatusCode)
+	}
+
+	responseBody, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	err = response.Body.Close()
+	if err != nil {
+		return nil, fmt.Errorf("failed to close response body: %w", err)
+	}
+
+	return responseBody, nil
 }
