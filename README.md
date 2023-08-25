@@ -11,7 +11,7 @@ installation of GitHub repositories that are owned or starred by a user.
 repositories that you either own or have starred. This tool uses `fzf` as the
 prompt to select the repository. You can select by using the arrow keys or
 typing in the name of the specific repository. Repository Selector then invokes
-`git clone <repository>` over SSH, into the current directory.
+`git clone <repository>` in the current directory using SSH. 
 
 ## Installation
 
