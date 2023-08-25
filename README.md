@@ -31,9 +31,11 @@ repositories, and all repositories owned by the user. This token
 has to be entered into the `GITHUB_TOKEN` section of the
 `config.yaml` file.
 
-The binary can then be installed gloablly via `make install`.
-This will install the executable in `usr/local/bin`, and the
-config file in `/usr/local/share/rps`.
+The binary can then be installed gloablly via `make install`.  This will
+install the executable in `usr/local/bin`, and the config file in
+`/usr/local/share/rps`. If you have re-built the binary, `make
+install_no_config` only moves the binary and does not overwrite the
+configuration file.
 
 ## Generating a GitHub Token
 
