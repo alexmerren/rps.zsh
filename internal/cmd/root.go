@@ -16,17 +16,9 @@ import (
 var errConfigNotValid = errors.New("could not find token or username")
 
 const (
-	defaultProtocol = "ssh"
-
-	defaultIsVimMode     = false
-	vimModeFlagNameLong  = "vimmode"
-	vimModeFlagNameShort = "v"
-	vimModeFlagUsage     = "use vim-like controls on the selection prompt"
-
-	defaultNumLines       = 10
-	numLinesFlagNameLong  = "lines"
-	numLinesFlagNameShort = "l"
-	numLinesFlagUsage     = "number of lines to display on the selection prompt"
+	defaultProtocol  = false
+	protocolNameLong = "http"
+	protocolUsage    = "clone over https instead of ssh"
 )
 
 func NewCmdRoot() *cobra.Command {
@@ -35,28 +27,29 @@ func NewCmdRoot() *cobra.Command {
 		Use:   "rps",
 		Short: "Select repositories to download",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			isVimMode, err := cmd.Flags().GetBool(vimModeFlagNameLong)
+			protocol, err := cmd.Flags().GetBool(protocolNameLong)
 			if err != nil {
-				return fmt.Errorf("could not get vim mode flag: %w", err)
+				return fmt.Errorf("could not get protocol flag: %w", err)
 			}
 
-			numberOfLines, err := cmd.Flags().GetInt(numLinesFlagNameLong)
-			if err != nil {
-				return fmt.Errorf("could not get number of lines flag: %w", err)
+			protocolString := ""
+			if protocol {
+				protocolString = "https"
+			} else {
+				protocolString = "ssh"
 			}
 
-			return rootRun(cmd.Context(), isVimMode, numberOfLines, defaultProtocol)
+			return rootRun(cmd.Context(), protocolString)
 		},
 	}
 	cmd.SilenceErrors = true
 	cmd.SilenceUsage = true
-	cmd.PersistentFlags().BoolP(vimModeFlagNameLong, vimModeFlagNameShort, defaultIsVimMode, vimModeFlagUsage)
-	cmd.PersistentFlags().IntP(numLinesFlagNameLong, numLinesFlagNameShort, defaultNumLines, numLinesFlagUsage)
+	cmd.PersistentFlags().Bool(protocolNameLong, defaultProtocol, protocolUsage)
 
 	return cmd
 }
 
-func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remoteProtocol string) error {
+func rootRun(ctx context.Context, remoteProtocol string) error {
 	config, err := config.CreateUserConfig()
 	if err != nil {
 		return fmt.Errorf("could not get user config: %w", err)
@@ -67,15 +60,6 @@ func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remotePr
 		return err
 	}
 
-	// If you'd rather *not* use fzf, then uncomment!
-	// prompter := prompt.NewGithubRepositoryPrompt()
-	// bellSkipperStdout := prompt.NewBellSkipperStdout()
-
-	// selectedIndex, err := prompter.SelectRepositoryPrompt(repositories, isVimMode, numLinesInPrompt, bellSkipperStdout)
-	// if err != nil {
-	// 	return fmt.Errorf("error in prompt: %w", err)
-	// }
-
 	selectedIndex, err := prompt.NewFzfPrompt(repositories)
 	if err != nil {
 		return fmt.Errorf("error in prompt: %w", err)
@@ -84,7 +68,6 @@ func rootRun(ctx context.Context, isVimMode bool, numLinesInPrompt int, remotePr
 	remoteURL := repository.GenerateRepositoryRemoteURL(repositories[selectedIndex], remoteProtocol)
 	err = github.CallOsGitClone(ctx, remoteURL)
 
-	//nolint:wrapcheck // This does not need to be wrapped.
 	return err
 }
 
