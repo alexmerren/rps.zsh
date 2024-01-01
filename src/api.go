@@ -29,29 +29,31 @@ func GetUserRepositories(ctx context.Context, client *Client) ([]*Repository, er
 	return repositories, nil
 }
 
-func getRepositories(wg *sync.WaitGroup, repositories []*Repository, getFunc func(int) ([]byte, error)) {
+func getRepositories(
+	waitGroup *sync.WaitGroup,
+	repositories []*Repository,
+	getFunc func(int) ([]byte, error),
+) {
 	moreRepositories := true
 	pageNumber := 0
 
 	for moreRepositories {
-		wg.Add(1)
+		waitGroup.Add(1)
 		pageNumber += 1
-		go func() error {
+		go func() {
 			response, err := getFunc(pageNumber)
 			if err != nil {
-				return err
+				return
 			}
 
 			newRepositories, err := mapToRepositories(response)
 			if err != nil {
-				return err
+				return
 			}
 
 			repositories = append(repositories, newRepositories...)
 			moreRepositories = hasNext(response)
-			wg.Done()
-
-			return nil
+			waitGroup.Done()
 		}()
 	}
 }
