@@ -1,5 +1,4 @@
 GO ?= go
-MOCKERY ?= mockery
 LINTER := golangci-lint
 
 GOFLAGS :=
@@ -10,16 +9,14 @@ ifeq ($(STATIC),1)
 LDFLAGS += -s -w -extldflags "-static"
 endif
 
-CMD_DIR := $(CURDIR)/cmd
 DIST_DIR := $(CURDIR)/dist
 INTERNAL_DIR := $(CURDIR)/internal
 
-BIN_NAME := rps
+BIN_NAME := main
 
 .PHONY: help 
 help: ## Show this help message.	
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m  %-30s\033[0m %s\n", $$1, $$2}'
-
 
 .PHONY: all 
 all: vendor fmt lint test build ## Download dependencies, run unit tests, and build the project.
@@ -27,8 +24,7 @@ all: vendor fmt lint test build ## Download dependencies, run unit tests, and bu
 .PHONY: build 
 build: ## Download dependencies and build the project. GOFLAGS can be specified for build flags.
 	@mkdir -p $(DIST_DIR)
-	$(GO) build $(GOFLAGS) -ldflags '$(LDFLAGS)' -mod=vendor -o $(DIST_DIR) $(CMD_DIR)/...
-
+	$(GO) build $(GOFLAGS) -ldflags '$(LDFLAGS)' -mod=vendor -o $(DIST_DIR) main.go
 
 .PHONY: vendor
 vendor: ## Vendor dependencies.
@@ -42,10 +38,6 @@ test: ## Run unit tests.
 .PHONY: lint
 lint: ## Lint the project
 	$(LINTER) run ./...
-
-.PHONY: mocks
-mocks: ## Generate mocks for interfaces in internal.
-	$(MOCKERY) --dir $(INTERNAL_DIR)
 
 .PHONY: fmt
 fmt: ## Format all the code in the project, must be done prior to building for maximum effectiveness.
