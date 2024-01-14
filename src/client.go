@@ -80,6 +80,6 @@ func (c *Client) ListOrgRepos(organization string) {
 
 func printRepos(repos []*github.Repository) {
 	for _, repo := range repos {
-		fmt.Println(repo.FullName)
+		fmt.Println(*repo.FullName)
 	}
 }
