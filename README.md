@@ -41,9 +41,6 @@ configuration file.
 
 [Here](https://docs.github.com/en/enterprise-server@3.6/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) you can find a guide to generating a GitHub token.
 
-## Upcoming Features
+## Inspiration
 
-- [ ] Create script to call rps
-- [ ] Create rps to list repositories and print them to stdout
-- [ ] De-duplicate the incoming repositories
-- [ ] 
+I've basically copied this tutorial [here](https://mattorb.com/fuzzy-find-github-repository/).
