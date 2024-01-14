@@ -43,4 +43,7 @@ configuration file.
 
 ## Upcoming Features
 
-- [ ] Add option to clone over HTTPS.
+- [ ] Create script to call rps
+- [ ] Create rps to list repositories and print them to stdout
+- [ ] De-duplicate the incoming repositories
+- [ ] 

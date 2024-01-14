@@ -11,8 +11,7 @@ endif
 
 DIST_DIR := $(CURDIR)/dist
 INTERNAL_DIR := $(CURDIR)/internal
-
-BIN_NAME := main
+CMD_DIR := $(CURDIR)/cmd
 
 .PHONY: help 
 help: ## Show this help message.	
@@ -24,7 +23,7 @@ all: vendor fmt lint test build ## Download dependencies, run unit tests, and bu
 .PHONY: build 
 build: ## Download dependencies and build the project. GOFLAGS can be specified for build flags.
 	@mkdir -p $(DIST_DIR)
-	$(GO) build $(GOFLAGS) -ldflags '$(LDFLAGS)' -mod=vendor -o $(DIST_DIR) main.go
+	$(GO) build $(GOFLAGS) -ldflags '$(LDFLAGS)' -mod=vendor -o $(DIST_DIR) $(CMD_DIR)/...
 
 .PHONY: vendor
 vendor: ## Vendor dependencies.
@@ -47,6 +46,8 @@ DEST_DIR :=
 PREFIX := /usr/local
 BIN_DIR := ${PREFIX}/bin
 DATA_DIR := ${PREFIX}/share
+
+# TODO DONT USE THESE THEY NEED TO BE FIXED
 
 .PHONY: install 
 install: ## Install rps to /usr/local/bin and config to /usr/local/share/rps
