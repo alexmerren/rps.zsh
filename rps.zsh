@@ -10,15 +10,15 @@ function rps() {
     # Hash the github token to version the cache of list_repositories, and
     # insert the contents of cache into the queue.
     SHA=$(echo $GITHUB_TOKEN | shasum -a 512 | awk '{print $1}')
-    CACHE="rps_cache_$SHA.txt"
-    cat $CACHE 2>/dev/null > $QUEUE &
+    CACHE="/tmp/rps_cache_$SHA.txt"
+    cat $CACHE 2>/dev/null > $QUEUE &!
 
     # Call list repositories and send the output to the cache and the queue.
     # De-duplicate the list coming from the queue and use fzf to select.
-    ./dist/rps_list $GITHUB_TOKEN | tee $CACHE > $QUEUE &
-    cat $QUEUE | ./dist/rps_unique | fzf | read -l repo
+    _rps_list $GITHUB_TOKEN | tee $CACHE > $QUEUE &!
+    cat $QUEUE | _rps_unique | fzf | read repo
 
-    git clone $repo
+    git clone git@github.com:$repo.git
 
     rm $QUEUE
 }
