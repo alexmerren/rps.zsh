@@ -21,26 +21,25 @@ This project assumes that you have a few things installed:
  - [Golang 1.16+](https://go.dev/doc/install)
  - [FZF](https://github.com/junegunn/fzf)
 
-The only option to install this project is building from source.
-To run all tests, vendor dependencies, and build the executable:
-run `make all`. 
+After the proper configuration, it can be built and installed using the
+following:
+
+```bash
+make build && make install
+```
+
+The zsh function inside `rps.zsh` can then be copied and sourced by zsh to be
+used as a standalone function. 
 
 `rps` requires a GitHub token with the appropriate permissions.
 Specifically, the ability to read the user's starred
 repositories, and all repositories owned by the user. This token
-has to be entered into the `GITHUB_TOKEN` section of the
-`config.yaml` file.
-
-The binary can then be installed gloablly via `make install`.  This will
-install the executable in `usr/local/bin`, and the config file in
-`/usr/local/share/rps`. If you have re-built the binary, `make
-install_no_config` only moves the binary and does not overwrite the
-configuration file.
+has to be entered into the `GITHUB_TOKEN` variable in [`rps.zsh`](./rps.zsh).
 
 ## Generating a GitHub Token
 
-[Here](https://docs.github.com/en/enterprise-server@3.6/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) you can find a guide to generating a GitHub token.
+A guide to generate an appropriate GitHub token can be found [here](https://docs.github.com/en/enterprise-server@3.6/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
 ## Inspiration
 
-I've basically copied this tutorial [here](https://mattorb.com/fuzzy-find-github-repository/).
+This is essentially copied this tutorial [here](https://mattorb.com/fuzzy-find-github-repository/).
